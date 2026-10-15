@@ -74,6 +74,11 @@ function duration(ms) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+// Los casos a pedido no tienen número.
+function caseTitle(c) {
+  return c.number ? `Caso N.º ${String(c.number).padStart(2, '0')}: ${c.title}` : c.title;
+}
+
 function scrollToEvidence(id) {
   document.getElementById(`ev-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -310,7 +315,7 @@ function RolePick({ room, act }) {
 
   return (
     <main className="game">
-      <h1 className="screen-title">Caso N.º {String(room.case.number).padStart(2, '0')}: {room.case.title}</h1>
+      <h1 className="screen-title">{caseTitle(room.case)}</h1>
       {full ? (
         <p className="screen-lead">Los dos roles de esta partida ya están ocupados. Si sos parte de ella, abrí el link desde el mismo celular con el que entraste.</p>
       ) : (
@@ -351,7 +356,7 @@ function SoloStart({ room, act }) {
 
   return (
     <main className="game">
-      <h1 className="screen-title">Caso N.º {String(room.case.number).padStart(2, '0')}: {room.case.title}</h1>
+      <h1 className="screen-title">{caseTitle(room.case)}</h1>
       {taken ? (
         <p className="screen-lead">Esta partida ya se está jugando en otro celular. Para jugar acá, creá una partida nueva.</p>
       ) : (

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "generar-caso": "node --env-file-if-exists=.env scripts/generar-caso.mjs"
+    "generar-caso": "node --env-file-if-exists=.env scripts/generar-caso.mjs",
+    "pedidos": "node --env-file-if-exists=.env scripts/pedidos.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",
@@ -15,6 +16,7 @@
     "qrcode": "^1.5.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "sharp": "^0.35.5"
   }
 }

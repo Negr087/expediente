@@ -945,3 +945,48 @@ div.role-option { cursor: default; }
   border-radius: 10px;
   margin-top: 4px;
 }
+
+/* Armá tu caso */
+.custom-cta { margin: 18px 0 0; color: var(--niebla); }
+.custom-cta a { color: var(--kraft); font-weight: 600; }
+.request-form { margin-top: 8px; }
+.previous { color: var(--niebla); font-size: 14px; }
+.previous a { color: var(--kraft); font-family: var(--maquina); }
+.form-block { border: 0; border-top: 1px solid var(--rio-3); padding: 18px 0 6px; margin: 0; }
+.form-block legend { font-family: var(--display); font-size: 24px; padding: 0 8px 0 0; }
+.form-help { color: var(--niebla); font-size: 14px; margin: 4px 0 12px; }
+.field { display: block; margin: 0 0 12px; }
+.field > span { display: block; font-size: 14px; color: var(--niebla); margin-bottom: 4px; }
+.field input, .field textarea, .field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--rio-3);
+  border-radius: 3px;
+  background: var(--rio-2);
+  font-size: 16px;
+}
+.field textarea { resize: vertical; }
+.field-row { display: flex; gap: 10px; }
+.field.grow { flex: 1; min-width: 0; }
+.field.age { width: 84px; flex: none; }
+.suspect-input { background: var(--rio-2); border-radius: 3px; padding: 12px 12px 4px; margin: 0 0 12px; }
+.suspect-input .field input { background: var(--rio); }
+.suspect-input-title { margin: 0 0 8px; font-weight: 600; }
+.photo-input { display: flex; gap: 12px; align-items: center; margin: 0 0 12px; }
+.photo-input img, .photo-empty { width: 64px; height: 78px; object-fit: cover; border-radius: 2px; flex: none; }
+.photo-empty { border: 1px dashed var(--rio-3); color: var(--niebla); font-size: 11px; display: flex; align-items: center; justify-content: center; text-align: center; }
+.photo-btn { position: relative; min-height: 40px; padding: 0 14px; font-size: 14px; cursor: pointer; margin-right: 10px; }
+.photo-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.consent { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0 16px; padding: 12px; border: 1px solid var(--kraft-dark); border-radius: 3px; }
+.consent input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--kraft); flex: none; }
+.trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.pedido-steps { list-style: none; padding: 0; margin: 8px 0 20px; display: grid; gap: 8px; }
+.pedido-steps li { border-left: 4px solid var(--rio-3); padding: 6px 12px; color: var(--niebla); }
+.pedido-steps li.done { border-color: var(--kraft-dark); color: var(--hoja); }
+.pedido-steps li.now { border-color: var(--kraft); color: var(--hoja); background: var(--rio-2); }
+.pedido-steps span { display: block; font-size: 14px; color: var(--niebla); }
+.pedido-summary { margin: 20px 0; font-size: 15px; }
+.pedido-summary p { margin: 0 0 8px; }
+.pedido-summary span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--kraft); }

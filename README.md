@@ -24,7 +24,7 @@ Para jugar los dos roles desde una sola computadora, abrí la sala en una ventan
 
 ## Producción (Vercel + Supabase)
 
-1. En Supabase, abrí el SQL Editor y corré `supabase/schema.sql`.
+1. En Supabase, abrí el SQL Editor y corré `supabase/schema.sql` (crea las tablas `rooms` y `pedidos` y el bucket privado `pedidos` para las fotos). Se puede volver a correr sin romper nada.
 2. En Vercel, cargá estas variables de entorno (Settings → API en Supabase):
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
@@ -44,6 +44,9 @@ app/
   api/rooms/[code]/evidence   Evidencia del rol del jugador, según la fase
   api/rooms/[code]/suspects   Sospechosos y preguntas desbloqueadas
   api/rooms/[code]/media      Imágenes del caso, con las mismas reglas que la evidencia
+  arma-tu-caso/               Formulario para pedir un caso a medida
+  pedido/[id]/                Estado del pedido y botón para jugarlo
+  api/pedidos/                Recibe el formulario y las fotos
 components/
   StartForm.js                Crear partida / unirse con código
   Game.js                     Todas las pantallas del juego
@@ -53,10 +56,13 @@ lib/
   cases/portrait.mjs          Retratos dibujados a partir de rasgos
   game.js                     Reglas, puntaje y lo que se le muestra a cada jugador
   store.js                    Guardado en Supabase o en memoria
+  pedidos/                    Pedidos de "Armá tu caso" (Supabase o .datos-locales/)
 casos/
   las-toscas.json             Cada caso es un JSON: evidencias, sospechosos, respuestas
 scripts/
   generar-caso.mjs            Genera un caso nuevo con Claude
+  pedidos.mjs                 Atiende los pedidos de "Armá tu caso"
+CLAUDE.md                     Paso a paso para que Claude Code arme los casos a pedido
 media/
   las-toscas/                 Retratos, cámaras de seguridad y fotos de la escena
 supabase/schema.sql
@@ -76,6 +82,24 @@ Las que vienen ahora son ilustraciones SVG. Para cambiarlas por fotos reales (o 
 
 - En la evidencia, un bloque `{ type: 'image', src: 'cam-pasillo.jpg', style: 'cctv' | 'polaroid' | 'doc', caption, text, alt }`.
 - En los sospechosos, el campo `photo: 'ferran.jpg'`.
+
+## Armá tu caso
+
+En `/arma-tu-caso` cualquiera pide un caso a medida: dónde pasa, la víctima, de 3 a 4 sospechosos con su relación, fotos opcionales, quién es el culpable (o sorpresa) y detalles extra. Recibe un link `/pedido/<ID>` donde ve el estado (recibido, en preparación, listo) y, cuando está listo, lo juega desde ahí.
+
+- **Privado:** el caso no aparece en el inicio. Solo se juega con el link del pedido.
+- **Fotos:** se achican en el celular, el servidor las recorta y les borra los metadatos (por ejemplo la ubicación GPS) y quedan en un bucket privado de Supabase. Solo se ven dentro de ese caso. Para subirlas hay que confirmar que se tiene permiso de esas personas. Sin foto, se usa el retrato dibujado.
+- **Quién lo arma:** por ahora, Claude Code siguiendo `CLAUDE.md` (desde la notebook, desde claude.ai/code o con una tarea programada en la nube). Más adelante, con saldo en la API, se puede llamar al generador automáticamente al recibir el pedido.
+
+```bash
+npm run pedidos                          # pendientes
+npm run pedidos -- ver <ID>
+npm run pedidos -- tomar <ID>
+npm run pedidos -- entregar <ID> caso.json
+npm run pedidos -- rechazar <ID> "motivo"
+```
+
+Sin variables de Supabase, los pedidos y las fotos se guardan en `.datos-locales/` (ignorada por git), para probar en local.
 
 ## Reglas de puntaje
 

@@ -1,0 +1,26 @@
+# Expediente
+
+Juego de detectives para dos (Forense e Investigador). Next.js 15 + Supabase. Todo el texto del juego está en español rioplatense. El README explica la arquitectura.
+
+## Armar un caso a pedido ("Armá tu caso")
+
+La gente llena el formulario en `/arma-tu-caso`. El pedido queda en Supabase (tabla `pedidos`, fotos en el bucket privado `pedidos`) y la persona sigue el estado en `/pedido/<ID>`. Para atender los pedidos:
+
+1. `npm run pedidos` lista los pendientes. Atendé del más viejo al más nuevo.
+2. `npm run pedidos -- ver <ID>` muestra el pedido completo.
+3. `npm run pedidos -- tomar <ID>` lo marca "en preparación" (la persona lo ve).
+4. Si el pedido es ofensivo, apunta a lastimar a alguien o no se puede convertir en un caso apto para todo público: `npm run pedidos -- rechazar <ID> "motivo corto y amable"` y listo.
+5. Escribí el caso en un archivo **fuera del repo** (por ejemplo `/tmp/caso-<ID>.json`):
+   - Formato: el mismo de `casos/noche-de-cosecha.json` (el mejor ejemplo de estructura y calidad). No hace falta `id`, `number` ni `published`: los pone la entrega.
+   - Reglas: `GAME_INTRO`, `DESIGN_RULES` y `REQUEST_RULES` de `lib/cases/rules.mjs`. Cumplilas todas.
+   - Personas: cada una con `look` (rasgos, opciones en `LOOK_OPTIONS` de `lib/cases/portrait.mjs`). Si en el pedido tiene foto, poné `"photo": "<archivo de la foto>"` (por ejemplo `sospechoso-2.jpg`); si no, `"photo": "<id>.svg"` y la API dibuja el retrato. La víctima va en `victim` y su imagen como primer bloque del `briefing`, igual que en el ejemplo.
+   - Para que el `look` coincida con una foto, la podés bajar y mirar: `npm run pedidos -- foto <ID> <archivo> /tmp/<archivo>`.
+   - Solo usá imágenes en los bloques si existen; en un caso a pedido, lo normal es no poner imágenes en la evidencia.
+6. Revisalo como jugador antes de entregar: una sola línea de tiempo coherente, cada pregunta necesita evidencia de los dos roles, cada inocente se descarta con evidencia concreta.
+7. `npm run pedidos -- entregar <ID> /tmp/caso-<ID>.json` valida y entrega. Si marca problemas, corregí y volvé a entregar.
+
+Nunca agregues al repo los casos a pedido ni las fotos: son privados.
+
+## Casos del catálogo
+
+Los casos públicos son `casos/<id>.json` (con `"published": true`) y sus imágenes van en `media/<id>/`. Para validar uno: `node --input-type=module -e "import fs from 'node:fs'; import { validateCase } from './lib/cases/shared.mjs'; console.log(validateCase(JSON.parse(fs.readFileSync('casos/<id>.json','utf8'))))"`.

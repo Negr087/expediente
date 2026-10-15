@@ -16,6 +16,9 @@ export default async function Home() {
             celular o con uno cada uno.
           </p>
           <StartForm cases={cases} />
+          <p className="custom-cta">
+            ¿Querés un caso con tus amigos de personajes? <a href="/arma-tu-caso">Armá tu caso</a>
+          </p>
         </div>
 
         <div className="folder" aria-hidden="true">

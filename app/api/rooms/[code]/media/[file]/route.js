@@ -6,6 +6,7 @@ import { getRoom } from '@/lib/store';
 import { canSeeMedia } from '@/lib/game';
 import { loadCase } from '@/lib/cases';
 import { portraitSvg, plateLabel } from '@/lib/cases/portrait.mjs';
+import { getPhoto } from '@/lib/pedidos/store.mjs';
 
 // Las imágenes viven fuera de /public para que no se puedan abrir antes de tiempo.
 const TYPES = { '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' };
@@ -35,6 +36,9 @@ export async function GET(request, { params }) {
     const body = await readFile(path.join(process.cwd(), 'media', c.id, file));
     return new NextResponse(body, { headers: { 'Content-Type': type, ...HEADERS } });
   } catch {
+    // En un caso a pedido, las fotos que subió la persona tienen prioridad.
+    const uploaded = c.pedido && (await getPhoto(c.pedido, file));
+    if (uploaded) return new NextResponse(uploaded, { headers: { 'Content-Type': 'image/jpeg', ...HEADERS } });
     const svg = drawnPortrait(c, file);
     if (svg) return new NextResponse(svg, { headers: { 'Content-Type': 'image/svg+xml', ...HEADERS } });
     return new NextResponse(null, { status: 404 });
