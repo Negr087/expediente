@@ -1,6 +1,13 @@
 # Expediente
 
-Juego de detectives online para resolver en pareja. Cada jugador entra desde su celular, elige un rol (Forense o Investigador) y ve evidencia distinta. Para avanzar tienen que hablar y cruzar lo que tiene cada uno.
+Juego de detectives online para resolver en pareja. Uno es la Forense y el otro el Investigador, y cada rol tiene evidencia distinta. Para avanzar tienen que hablar y cruzar lo que tiene cada uno.
+
+Hay dos modos, que se eligen al crear la partida:
+
+- **Un celular:** los dos juegan con la misma pantalla. Cada documento tiene el color y el nombre del rol que lo lee, y un selector arriba del expediente muestra lo de la Forense o lo del Investigador. Se pasan el celular y cada uno lee lo suyo en voz alta.
+- **Cada uno con su celular:** cada jugador ve solo la evidencia de su rol y tiene que contársela al otro.
+
+En los dos modos, cada fase nueva abre un aviso con lo que le toca leer a cada uno, y el expediente arranca con un "Qué hacer ahora" que marca lo que ya leyeron.
 
 Caso incluido: **#01 — Última partida en Las Toscas**.
 
@@ -36,6 +43,7 @@ app/
   api/rooms/[code]/action     Unirse, responder, pedir pista, interrogar, acusar
   api/rooms/[code]/evidence   Evidencia del rol del jugador, según la fase
   api/rooms/[code]/suspects   Sospechosos y preguntas desbloqueadas
+  api/rooms/[code]/media      Imágenes del caso, con las mismas reglas que la evidencia
 components/
   StartForm.js                Crear partida / unirse con código
   Game.js                     Todas las pantallas del juego
@@ -43,6 +51,8 @@ lib/
   case/las-toscas.js          El caso: evidencias, sospechosos, respuestas (solo servidor)
   game.js                     Reglas, puntaje y lo que se le muestra a cada jugador
   store.js                    Guardado en Supabase o en memoria
+media/
+  las-toscas/                 Retratos, cámaras de seguridad y fotos de la escena
 supabase/schema.sql
 ```
 
@@ -51,6 +61,15 @@ supabase/schema.sql
 **Sincronización:** cada celular consulta el estado de la sala cada 2,5 segundos. Para dos jugadores alcanza y sobra; si más adelante hace falta, se puede cambiar por Supabase Realtime.
 
 **Concurrencia:** cada escritura usa control por versión (`version` en la tabla), así dos acciones simultáneas no se pisan.
+
+## Imágenes
+
+Las imágenes de cada caso están en `media/<id del caso>/`, fuera de `public/`, y se sirven por `/api/rooms/[code]/media/[archivo]`. La API solo entrega una imagen si el jugador ya puede ver la evidencia que la usa: una foto de cámara de la fase 3 no se puede abrir en la fase 1, y en el modo de dos celulares la Forense no puede abrir las cámaras del Investigador.
+
+Las que vienen ahora son ilustraciones SVG. Para cambiarlas por fotos reales (o generadas con IA), poné un `.jpg`, `.png` o `.webp` en la carpeta y cambiá el nombre en el caso:
+
+- En la evidencia, un bloque `{ type: 'image', src: 'cam-pasillo.jpg', style: 'cctv' | 'polaroid' | 'doc', caption, text, alt }`.
+- En los sospechosos, el campo `photo: 'ferran.jpg'`.
 
 ## Reglas de puntaje
 
@@ -65,5 +84,5 @@ Arrancan con 1.000 puntos.
 
 ## Agregar un caso nuevo
 
-Copiá `lib/case/las-toscas.js` con la misma estructura (evidencias con `role` y `phase`, sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` y `solution`). Por ahora el juego importa un solo caso; para tener varios, falta guardar `caseId` al crear la sala y elegir el caso desde la landing.
+Copiá `lib/case/las-toscas.js` con la misma estructura (evidencias con `role`, `phase` y bloques de texto o de imagen, sospechosos con `photo`, sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` y `solution`). Por ahora el juego importa un solo caso; para tener varios, falta guardar `caseId` al crear la sala y elegir el caso desde la landing.
 # expediente

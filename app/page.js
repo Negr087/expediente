@@ -9,8 +9,9 @@ export default function Home() {
         <div>
           <h1>Un asesinato para resolver en pareja.</h1>
           <p className="hero-lead">
-            Cada uno abre el caso en su celular y ve pistas distintas. Ninguno puede resolverlo solo:
-            van a tener que hablar, cruzar lo que tienen y acusar juntos.
+            Uno es la Forense y el otro el Investigador, y cada uno tiene pistas distintas. Ninguno puede
+            resolverlo solo: van a tener que hablar, cruzar lo que tienen y acusar juntos. Jueguen con un
+            celular o con uno cada uno.
           </p>
           <StartForm />
         </div>
@@ -34,7 +35,7 @@ export default function Home() {
         <ol className="steps">
           <li>
             <h3>Abran la partida</h3>
-            <p>Uno crea la sala y el otro entra escaneando el código QR desde su celular. No hace falta registrarse.</p>
+            <p>Con un solo celular se pasan la pantalla. Con dos, uno crea la sala y el otro entra con el código QR. No hace falta registrarse.</p>
           </li>
           <li>
             <h3>Elijan su rol</h3>
@@ -42,7 +43,7 @@ export default function Home() {
           </li>
           <li>
             <h3>Resuelvan juntos</h3>
-            <p>Interroguen a los sospechosos, respondan para abrir evidencia nueva y acusen al culpable. Entre 60 y 90 minutos.</p>
+            <p>Miren las cámaras, las fotos de la escena y las caras de los sospechosos. Respondan para abrir evidencia nueva y acusen al culpable. Entre 60 y 90 minutos.</p>
           </li>
         </ol>
       </section>

@@ -1,10 +1,15 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 
 const POLL_MS = 2500;
-const PHASE_NAMES = ['La escena', 'Las coartadas', 'La acusación'];
+const ROLE_IDS = ['forense', 'investigador'];
+const ROLE_SHORT = { forense: 'Forense', investigador: 'Investigador' };
+const ROLE_NAME = { forense: 'La Forense', investigador: 'El Investigador' };
+
+// Sala y jugador, para pedir las imágenes del caso a la API.
+const MediaCtx = createContext(null);
 
 function getPlayerId(code) {
   const key = `expediente-jugador-${code}`;
@@ -18,6 +23,33 @@ function getPlayerId(code) {
   } catch {
     return crypto.randomUUID();
   }
+}
+
+// Un Set guardado en localStorage: qué evidencias y respuestas ya se leyeron.
+function useStoredSet(key) {
+  const [value, setValue] = useState(() => new Set());
+  useEffect(() => {
+    try {
+      setValue(new Set(JSON.parse(localStorage.getItem(key) ?? '[]')));
+    } catch {}
+  }, [key]);
+  const add = useCallback((ids) => {
+    setValue((prev) => {
+      if (ids.every((id) => prev.has(id))) return prev;
+      const next = new Set([...prev, ...ids]);
+      try { localStorage.setItem(key, JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  }, [key]);
+  return [value, add];
+}
+
+function readNumber(key) {
+  try { return Number(localStorage.getItem(key) ?? 0); } catch { return 0; }
+}
+
+function writeNumber(key, n) {
+  try { localStorage.setItem(key, String(n)); } catch {}
 }
 
 async function api(path, options) {
@@ -42,6 +74,10 @@ function duration(ms) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+function scrollToEvidence(id) {
+  document.getElementById(`ev-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 export default function Game({ code }) {
   const [player, setPlayer] = useState(null);
   const [room, setRoom] = useState(null);
@@ -50,7 +86,10 @@ export default function Game({ code }) {
   const [fatal, setFatal] = useState(null);
   const [tab, setTab] = useState('expediente');
   const [toast, setToast] = useState(null);
-  const [seenEvidence, setSeenEvidence] = useState(() => new Set());
+  const [intro, setIntro] = useState(null);
+  const [view, setView] = useState('forense'); // en un celular: de qué rol se muestra el expediente
+  const [seenEvidence, markEvidence] = useStoredSet(`expediente-vistas-${code}`);
+  const [seenAnswers, markAnswers] = useStoredSet(`expediente-respuestas-${code}`);
   const lastLog = useRef(null);
   const sync = useRef({ phase: null, status: null, asked: null, role: null });
 
@@ -102,6 +141,16 @@ export default function Game({ code }) {
     return () => { stop = true; clearInterval(id); };
   }, [code, player, applyRoom, refreshDetails]);
 
+  // Cada fase nueva (y el arranque) se anuncia una vez, con lo que tiene que leer cada uno.
+  useEffect(() => {
+    if (room?.status !== 'playing' || !room.unlocked) return;
+    const key = `expediente-fase-${code}`;
+    if (readNumber(key) >= room.phase) return;
+    writeNumber(key, room.phase);
+    setIntro(room.phase);
+    setToast(null);
+  }, [code, room?.status, room?.phase, room?.unlocked]);
+
   useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToast(null), 4500);
@@ -121,6 +170,8 @@ export default function Game({ code }) {
     return next;
   }, [code, player, applyRoom, refreshDetails]);
 
+  const goTo = useCallback((id) => { setTab(id); window.scrollTo(0, 0); }, []);
+
   if (fatal) {
     return (
       <main className="center-msg">
@@ -135,37 +186,72 @@ export default function Game({ code }) {
     return <main className="center-msg"><p>Abriendo el expediente…</p></main>;
   }
 
-  if (!room.myRole) return <RolePick room={room} act={act} />;
-  if (room.status === 'lobby') return <Lobby room={room} />;
-  if (room.result) return <Resolution room={room} evidence={evidence} />;
+  let screen;
+  if (!room.myRole) {
+    screen = room.mode === 'solo' ? <SoloStart room={room} act={act} /> : <RolePick room={room} act={act} />;
+  } else if (room.status === 'lobby') {
+    screen = <Lobby room={room} />;
+  } else if (room.result) {
+    screen = <Resolution room={room} evidence={evidence} />;
+  }
+  if (screen) return <MediaCtx.Provider value={{ code, player }}>{screen}</MediaCtx.Provider>;
+
+  const myEvidence = evidence?.evidence ?? [];
+  const unseenEvidence = myEvidence.filter((e) => !seenEvidence.has(e.id)).length;
+  const answered = (suspects ?? []).flatMap((s) => s.questions.filter((q) => q.asked).map((q) => q.id));
+  const unseenAnswers = answered.filter((id) => !seenAnswers.has(id)).length;
 
   return (
-    <main className="game">
-      <TopBar room={room} />
-      <PhaseTrack phase={room.phase} />
+    <MediaCtx.Provider value={{ code, player }}>
+      <main className="game">
+        <TopBar room={room} />
+        <RoleStrip room={room} />
+        <PhaseTrack phase={room.phase} names={room.phaseNames} />
 
-      {tab === 'expediente' && (
-        <Dossier room={room} data={evidence} seen={seenEvidence} onSeen={setSeenEvidence} />
-      )}
-      {tab === 'sospechosos' && <Suspects suspects={suspects} act={act} />}
-      {tab === 'resolver' && <Solve room={room} act={act} />}
+        {tab === 'expediente' && (
+          <Dossier
+            room={room}
+            data={evidence}
+            seen={seenEvidence}
+            onSeen={markEvidence}
+            view={view}
+            setView={setView}
+            goTo={goTo}
+          />
+        )}
+        {tab === 'sospechosos' && (
+          <Suspects room={room} suspects={suspects} act={act} seen={seenAnswers} onSeen={markAnswers} />
+        )}
+        {tab === 'resolver' && <Solve room={room} act={act} />}
 
-      <nav className="tabs" aria-label="Secciones">
-        <div className="tabs-inner" role="tablist">
-          {[
-            ['expediente', 'Expediente'],
-            ['sospechosos', 'Sospechosos'],
-            ['resolver', room.phase < 3 ? 'Avanzar' : 'Acusar'],
-          ].map(([id, label]) => (
-            <button key={id} className="tab" role="tab" aria-selected={tab === id} onClick={() => { setTab(id); window.scrollTo(0, 0); }}>
-              {label}
-            </button>
-          ))}
-        </div>
-      </nav>
+        <nav className="tabs" aria-label="Secciones">
+          <div className="tabs-inner" role="tablist">
+            {[
+              ['expediente', 'Expediente', unseenEvidence],
+              ['sospechosos', 'Sospechosos', unseenAnswers],
+              ['resolver', room.phase < 3 ? 'Avanzar' : 'Acusar', 0],
+            ].map(([id, label, badge]) => (
+              <button key={id} className="tab" role="tab" aria-selected={tab === id} onClick={() => goTo(id)}>
+                {label}
+                {badge > 0 && tab !== id && <span className="badge" aria-label={`${badge} sin leer`}>{badge}</span>}
+              </button>
+            ))}
+          </div>
+        </nav>
 
-      {toast && <div className="toast" role="status">{toast}</div>}
-    </main>
+        {intro && (
+          <PhaseIntro
+            room={room}
+            onClose={() => {
+              setIntro(null);
+              if (room.mode === 'solo') setView('forense');
+              goTo('expediente');
+            }}
+          />
+        )}
+        {toast && <div className="toast" role="status">{toast}</div>}
+      </main>
+    </MediaCtx.Provider>
   );
 }
 
@@ -232,7 +318,7 @@ function RolePick({ room, act }) {
           <p className="screen-lead">Elegí cómo vas a investigar. Tu pareja toma el otro rol desde su celular.</p>
           <div className="role-pick">
             {Object.entries(room.roles).map(([id, r]) => (
-              <button key={id} className="role-option" disabled={r.taken || busy} onClick={() => pick(id)}>
+              <button key={id} className={`role-option role-${id}`} disabled={r.taken || busy} onClick={() => pick(id)}>
                 {r.taken && <span className="stamp">TOMADO</span>}
                 <h3>{r.name}</h3>
                 <p>{r.desc}</p>
@@ -241,6 +327,53 @@ function RolePick({ room, act }) {
           </div>
           {error && <p className="form-error" role="alert">{error}</p>}
           <div style={{ marginTop: 28 }}><Invite code={room.code} /></div>
+        </>
+      )}
+    </main>
+  );
+}
+
+function SoloStart({ room, act }) {
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const taken = Object.values(room.roles).some((r) => r.taken);
+
+  async function start() {
+    setBusy(true);
+    setError('');
+    try {
+      await act({ type: 'join', role: 'equipo' });
+    } catch (err) {
+      setError(err.message);
+      setBusy(false);
+    }
+  }
+
+  return (
+    <main className="game">
+      <h1 className="screen-title">Caso N.º {String(room.case.number).padStart(2, '0')}: {room.case.title}</h1>
+      {taken ? (
+        <p className="screen-lead">Esta partida ya se está jugando en otro celular. Para jugar acá, creá una partida nueva.</p>
+      ) : (
+        <>
+          <p className="screen-lead">Juegan los dos con este celular. Antes de abrir el expediente, repártanse los roles:</p>
+          <div className="role-pick">
+            {Object.entries(room.roles).map(([id, r]) => (
+              <div key={id} className={`role-option role-${id}`}>
+                <h3>{r.name}</h3>
+                <p>{r.desc}</p>
+              </div>
+            ))}
+          </div>
+          <ol className="how-solo">
+            <li>Cada documento tiene el color y el nombre de quien lo lee.</li>
+            <li>Pásense el celular: cada uno lee lo suyo <strong>en voz alta</strong>, sin mostrarle la pantalla al otro si quieren más desafío.</li>
+            <li>Cuando se abre una fase, el juego les avisa qué le toca leer a cada uno.</li>
+          </ol>
+          <button className="btn btn-block" onClick={start} disabled={busy} style={{ marginTop: 8 }}>
+            {busy ? 'Abriendo…' : 'Abrir el expediente'}
+          </button>
+          {error && <p className="form-error" role="alert">{error}</p>}
         </>
       )}
     </main>
@@ -286,10 +419,29 @@ function TopBar({ room }) {
   );
 }
 
-function PhaseTrack({ phase }) {
+function RoleStrip({ room }) {
+  if (room.mode === 'solo') {
+    return (
+      <div className="role-strip">
+        <span>Un celular para los dos:</span>
+        <span className="role-chip role-forense">Forense</span>
+        <span className="role-chip role-investigador">Investigador</span>
+      </div>
+    );
+  }
+  const partner = ROLE_IDS.find((r) => r !== room.myRole);
+  return (
+    <div className={`role-strip mine role-${room.myRole}`}>
+      <span>Sos <strong>{ROLE_NAME[room.myRole]}</strong></span>
+      <span className="role-strip-partner">Tu pareja: <span className={`role-chip role-${partner}`}>{ROLE_SHORT[partner]}</span></span>
+    </div>
+  );
+}
+
+function PhaseTrack({ phase, names }) {
   return (
     <div className="phases" aria-label={`Fase ${phase} de 3`}>
-      {PHASE_NAMES.map((name, i) => {
+      {names.map((name, i) => {
         const n = i + 1;
         const cls = n < phase ? 'phase done' : n === phase ? 'phase now' : 'phase';
         return <div key={name} className={cls} aria-current={n === phase ? 'step' : undefined}>Fase {n}<br />{name}</div>;
@@ -298,27 +450,174 @@ function PhaseTrack({ phase }) {
   );
 }
 
-function Dossier({ room, data, seen, onSeen }) {
-  useEffect(() => {
-    if (!data) return;
-    const t = setTimeout(() => onSeen(new Set(data.evidence.map((e) => e.id))), 1500);
-    return () => clearTimeout(t);
-  }, [data, onSeen]);
+// Lista de lo que abre la fase para un rol, con tilde si ya se leyó.
+function ReadList({ items, seen, onPick }) {
+  return (
+    <ul className="read-list">
+      {items.map((e) => {
+        const done = seen?.has(e.id);
+        const label = <><b>{e.id}</b> {e.title}</>;
+        return (
+          <li key={e.id} className={done ? 'done' : undefined}>
+            {onPick ? <button onClick={() => onPick(e.id)}>{label}</button> : <span>{label}</span>}
+            {done && <span className="check" aria-label="leída">✓</span>}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
+function PhaseIntro({ room, onClose }) {
+  const solo = room.mode === 'solo';
+  const name = room.phaseNames[room.phase - 1];
+  const first = room.phase === 1;
+  const closeRef = useRef(null);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    function onKey(e) { if (e.key === 'Escape') onClose(); }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const order = solo ? ROLE_IDS : [room.myRole, ...ROLE_IDS.filter((r) => r !== room.myRole)];
+
+  return (
+    <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+      <div className="intro-card">
+        <span className="stamp">{first ? 'CASO ABIERTO' : 'NUEVA EVIDENCIA'}</span>
+        <p className="kicker">Fase {room.phase} · {name}</p>
+        <h2 id="intro-title">{first ? 'Empieza la investigación' : `Se abrió la fase ${room.phase}`}</h2>
+        <p className="intro-lead">
+          {solo
+            ? 'Pásense el celular. Cada uno lee en voz alta lo que le toca:'
+            : 'Esto es lo que tiene cada uno. Lo de tu pareja aparece solo en su celular.'}
+        </p>
+
+        {order.map((r) => {
+          const mine = !solo && r === room.myRole;
+          const title = solo ? `${ROLE_NAME[r]} lee` : mine ? `Vos (${ROLE_NAME[r]}) leés` : `Tu pareja (${ROLE_NAME[r]}) lee`;
+          return (
+            <div key={r} className={`intro-role role-${r}${!solo && !mine ? ' partner' : ''}`}>
+              <h3>{title}</h3>
+              <ReadList items={room.unlocked[r]} />
+              {!solo && !mine && <p className="intro-note">Pedile que te cuente qué dice.</p>}
+            </div>
+          );
+        })}
+
+        <p className="intro-next">
+          Después, cuéntense lo que encontraron
+          {room.gate ? <> y respondan: <strong>«{room.gate.question}»</strong></> : <> y armen la acusación: quién, cómo y por qué.</>}
+        </p>
+        <button ref={closeRef} className="btn btn-ink btn-block" onClick={onClose}>
+          {solo ? 'Empezar a leer' : 'Ver mi evidencia'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Mission({ room, seen, solo, onPick, goTo }) {
+  const order = solo ? ROLE_IDS : [room.myRole, ...ROLE_IDS.filter((r) => r !== room.myRole)];
+  return (
+    <div className="mission">
+      <p className="kicker">Fase {room.phase} · {room.phaseNames[room.phase - 1]}</p>
+      <h3>Qué hacer ahora</h3>
+      <ol className="mission-steps">
+        <li>
+          {room.phase === 1 ? 'Lean su evidencia:' : 'Lean la evidencia nueva:'}
+          <div className="mission-roles">
+            {order.map((r) => {
+              const mine = solo || r === room.myRole;
+              return (
+                <div key={r} className={`mission-role role-${r}${mine ? '' : ' partner'}`}>
+                  <span className={`role-chip role-${r}`}>{solo ? ROLE_SHORT[r] : mine ? 'Vos' : 'Tu pareja'}</span>
+                  <ReadList items={room.unlocked[r]} seen={mine ? seen : null} onPick={mine ? (id) => onPick(r, id) : null} />
+                </div>
+              );
+            })}
+          </div>
+        </li>
+        <li>{solo ? 'Léanse en voz alta lo que tiene cada uno.' : 'Cuéntense lo que tiene cada uno: tu pareja no ve tu pantalla.'}</li>
+        <li>
+          Muéstrenles la evidencia a los{' '}
+          <button className="link" onClick={() => goTo('sospechosos')}>sospechosos</button>.
+        </li>
+        <li>
+          {room.gate ? (
+            <>Respondan en <button className="link" onClick={() => goTo('resolver')}>Avanzar</button>: «{room.gate.question}»</>
+          ) : (
+            <><button className="link" onClick={() => goTo('resolver')}>Acusen</button>: quién, cómo y por qué.</>
+          )}
+        </li>
+      </ol>
+    </div>
+  );
+}
+
+function Dossier({ room, data, seen, onSeen, view, setView, goTo }) {
+  const solo = room.mode === 'solo';
   if (!data) return <p className="screen-lead">Cargando evidencia…</p>;
-  const role = room.roles[room.myRole];
+
+  const items = solo ? data.evidence.filter((e) => e.role === view) : data.evidence;
+  const unseenBy = (r) => data.evidence.filter((e) => e.role === r && !seen.has(e.id)).length;
+
+  function pick(role, id) {
+    if (solo && role !== view) {
+      setView(role);
+      setTimeout(() => scrollToEvidence(id), 50);
+    } else {
+      scrollToEvidence(id);
+    }
+  }
+
+  const phases = [];
+  for (let p = room.phase; p >= 1; p--) {
+    const list = items.filter((e) => e.phase === p);
+    if (list.length) phases.push([p, list]);
+  }
 
   return (
     <section>
-      <h2 className="screen-title">Tu expediente</h2>
-      <p className="screen-lead">Sos {role.name}. Lo que ves acá, tu pareja no lo ve: contáselo.</p>
+      <Mission room={room} seen={seen} solo={solo} onPick={pick} goTo={goTo} />
+
+      <h2 className="screen-title">{solo ? 'El expediente' : 'Tu expediente'}</h2>
+      {solo ? (
+        <>
+          <p className="screen-lead">Elegí de quién es el turno de leer.</p>
+          <div className="role-switch" role="tablist" aria-label="Rol">
+            {ROLE_IDS.map((r) => {
+              const n = unseenBy(r);
+              return (
+                <button key={r} role="tab" aria-selected={view === r} className={`role-${r}`} onClick={() => setView(r)}>
+                  {ROLE_NAME[r]}
+                  {n > 0 && <span className="badge">{n}</span>}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <p className="screen-lead">Sos {ROLE_NAME[room.myRole]}. Esto lo ves solo vos: contáselo a tu pareja.</p>
+      )}
 
       <details className="briefing" open={room.phase === 1}>
         <summary>Volver a leer el informe inicial</summary>
         <Sheet item={{ id: 'Caso', ...data.briefing }} />
       </details>
-      {[...data.evidence].reverse().map((item) => (
-        <Sheet key={item.id} item={item} isNew={seen.size > 0 && !seen.has(item.id)} />
+
+      {phases.map(([p, list]) => (
+        <div key={p}>
+          <h3 className="phase-heading">
+            Fase {p} · {room.phaseNames[p - 1]}
+            {p === room.phase && p > 1 && <span className="phase-new">recién abierta</span>}
+          </h3>
+          {list.map((item) => (
+            <Sheet key={item.id} item={item} showRole={solo} isNew={!seen.has(item.id)} onSeen={onSeen} />
+          ))}
+        </div>
       ))}
 
       {data.lockedCount > 0 && (
@@ -331,15 +630,75 @@ function Dossier({ room, data, seen, onSeen }) {
   );
 }
 
-function Sheet({ item, isNew }) {
+// Una hoja cuenta como leída cuando estuvo a la vista un momento.
+function useSeenOnView(id, onSeen) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !onSeen) return;
+    let timer = null;
+    const obs = new IntersectionObserver(([entry]) => {
+      const visible = entry.intersectionRatio >= 0.5 || entry.intersectionRect.height >= window.innerHeight * 0.5;
+      clearTimeout(timer);
+      if (visible) timer = setTimeout(() => onSeen([id]), 1200);
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    obs.observe(el);
+    return () => { clearTimeout(timer); obs.disconnect(); };
+  }, [id, onSeen]);
+  return ref;
+}
+
+function Sheet({ item, isNew, onSeen, showRole = true }) {
+  const ref = useSeenOnView(item.id, isNew ? onSeen : null);
+  const role = item.role;
   return (
-    <article className="sheet">
-      <span className="sheet-id">{item.id}</span>
+    <article ref={ref} id={`ev-${item.id}`} className={`sheet${role ? ` role-${role}` : ''}`}>
+      <span className="sheet-id">{item.id}{role && showRole ? ` · ${ROLE_SHORT[role]}` : ''}</span>
       {isNew && <span className="stamp new-mark">NUEVA</span>}
       <h3>{item.title}</h3>
       {item.source && <p className="sheet-source">{item.source}</p>}
       {item.blocks.map((b, i) => <Block key={i} b={b} />)}
     </article>
+  );
+}
+
+function mediaUrl(ctx, file) {
+  return `/api/rooms/${ctx.code}/media/${file}?player=${ctx.player}`;
+}
+
+function Lightbox({ src, alt, caption, onClose }) {
+  useEffect(() => {
+    function onKey(e) { if (e.key === 'Escape') onClose(); }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  return (
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={caption || alt} onClick={onClose}>
+      <img src={src} alt={alt} />
+      {caption && <p>{caption}</p>}
+      <button className="btn btn-ghost" onClick={onClose} autoFocus>Cerrar</button>
+    </div>
+  );
+}
+
+function Picture({ b }) {
+  const ctx = useContext(MediaCtx);
+  const [zoom, setZoom] = useState(false);
+  const src = mediaUrl(ctx, b.src);
+  return (
+    <figure className={`media media-${b.style ?? 'polaroid'}`}>
+      <button className="media-btn" onClick={() => setZoom(true)} aria-label={`Ampliar ${b.caption ?? 'imagen'}`}>
+        <img src={src} alt={b.alt ?? ''} loading="lazy" />
+        <span className="zoom-hint" aria-hidden="true">Ampliar</span>
+      </button>
+      {(b.caption || b.text) && (
+        <figcaption>
+          {b.caption && <strong>{b.caption}</strong>}
+          {b.text && <span>{b.text}</span>}
+        </figcaption>
+      )}
+      {zoom && <Lightbox src={src} alt={b.alt ?? ''} caption={b.caption} onClose={() => setZoom(false)} />}
+    </figure>
   );
 }
 
@@ -349,6 +708,8 @@ function Block({ b }) {
       return <p>{b.text}</p>;
     case 'note':
       return <p className="note">{b.text}</p>;
+    case 'image':
+      return <Picture b={b} />;
     case 'kv':
       return (
         <table className="kv">
@@ -385,9 +746,35 @@ function Block({ b }) {
   }
 }
 
-function Suspects({ suspects, act }) {
+function Portrait({ suspect }) {
+  const ctx = useContext(MediaCtx);
+  const [zoom, setZoom] = useState(false);
+  if (!suspect.photo) return null;
+  const src = mediaUrl(ctx, suspect.photo);
+  return (
+    <>
+      <button className="portrait" onClick={() => setZoom(true)} aria-label={`Ver la foto de ${suspect.name}`}>
+        <img src={src} alt={`Foto de ${suspect.name}`} />
+      </button>
+      {zoom && <Lightbox src={src} alt={`Foto de ${suspect.name}`} caption={suspect.name} onClose={() => setZoom(false)} />}
+    </>
+  );
+}
+
+function Suspects({ room, suspects, act, seen, onSeen }) {
   const [busy, setBusy] = useState(null);
   const [error, setError] = useState('');
+  const [fresh, setFresh] = useState(() => new Set());
+  const solo = room.mode === 'solo';
+
+  // Las respuestas que llegan mientras se mira esta pantalla se marcan como nuevas.
+  useEffect(() => {
+    if (!suspects) return;
+    const ids = suspects.flatMap((s) => s.questions.filter((q) => q.asked && !seen.has(q.id)).map((q) => q.id));
+    if (!ids.length) return;
+    setFresh((prev) => new Set([...prev, ...ids]));
+    onSeen(ids);
+  }, [suspects, seen, onSeen]);
 
   if (!suspects) return <p className="screen-lead">Cargando sospechosos…</p>;
 
@@ -403,29 +790,46 @@ function Suspects({ suspects, act }) {
     }
   }
 
+  function owner(role) {
+    if (solo) return { label: `La lee ${ROLE_NAME[role].toLowerCase()}`, chip: ROLE_SHORT[role] };
+    if (room.myRoles.includes(role)) return { label: 'Está en tu expediente', chip: 'Tuya' };
+    return { label: 'La tiene tu pareja: pedile que te la lea antes', chip: 'De tu pareja' };
+  }
+
   return (
     <section>
       <h2 className="screen-title">Sospechosos</h2>
-      <p className="screen-lead">Mostrales evidencia para ver cómo reaccionan. Lo que respondan lo ven los dos.</p>
+      <p className="screen-lead">
+        Mostrales evidencia para ver cómo reaccionan.{' '}
+        {solo ? 'Lean la respuesta en voz alta.' : 'Lo que respondan lo ven los dos.'}
+      </p>
       {error && <p className="form-error" role="alert">{error}</p>}
       {suspects.map((s) => (
         <article key={s.id} className="suspect">
-          <h3>{s.name}</h3>
-          <p className="who">{s.age} años. {s.role}.</p>
+          <div className="suspect-head">
+            <Portrait suspect={s} />
+            <div>
+              <h3>{s.name}</h3>
+              <p className="who">{s.age} años. {s.role}.</p>
+            </div>
+          </div>
           <p className="statement">“{s.statement}”</p>
-          {s.questions.map((q) =>
-            q.asked ? (
-              <div key={q.id} className="answer">
+          {s.questions.map((q) => {
+            const o = owner(q.ownedBy);
+            return q.asked ? (
+              <div key={q.id} className={`answer role-${q.ownedBy}`}>
+                {fresh.has(q.id) && <span className="answer-new">Nueva</span>}
                 <span className="label">Le mostraron {q.evidenceId}: {q.evidenceTitle}</span>
                 <p>“{q.answer}”</p>
               </div>
             ) : (
-              <button key={q.id} className="q-btn" onClick={() => show(q.id)} disabled={busy === q.id}>
+              <button key={q.id} className={`q-btn role-${q.ownedBy}`} onClick={() => show(q.id)} disabled={busy === q.id}>
+                <span className={`role-chip role-${q.ownedBy}`}>{o.chip}</span>
                 Mostrarle {q.evidenceId}: {q.evidenceTitle}
-                <small>La tiene {q.ownedBy === 'Forense' ? 'la Forense' : 'el Investigador'}</small>
+                <small>{o.label}</small>
               </button>
-            ),
-          )}
+            );
+          })}
         </article>
       ))}
     </section>
@@ -555,7 +959,8 @@ function Hints({ room, act }) {
   if (!h) return null;
 
   async function take() {
-    if (!window.confirm(`La pista cuesta ${h.nextCost} puntos y la ven los dos. ¿La piden?`)) return;
+    const who = room.mode === 'solo' ? '' : ' y la ven los dos';
+    if (!window.confirm(`La pista cuesta ${h.nextCost} puntos${who}. ¿La piden?`)) return;
     setBusy(true);
     setError('');
     try {
@@ -653,7 +1058,9 @@ function Resolution({ room, evidence }) {
       {evidence?.evidence?.length > 0 && (
         <>
           <h2 className="screen-title">Toda la evidencia</h2>
-          <p className="screen-lead">Ahora pueden ver también lo que tenía su pareja.</p>
+          <p className="screen-lead">
+            {room.mode === 'solo' ? 'Todo el expediente, junto.' : 'Ahora pueden ver también lo que tenía su pareja.'}
+          </p>
           {evidence.evidence.map((item) => <Sheet key={item.id} item={item} />)}
         </>
       )}

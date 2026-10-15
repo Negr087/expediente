@@ -2,7 +2,7 @@ import './globals.css';
 
 export const metadata = {
   title: 'Expediente — casos para resolver en pareja',
-  description: 'Un asesinato, dos celulares y evidencia distinta para cada uno. Resuelvan el caso juntos.',
+  description: 'Un asesinato, dos roles y evidencia distinta para cada uno. Resuelvan el caso juntos, con uno o dos celulares.',
 };
 
 export const viewport = {
