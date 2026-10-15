@@ -1,0 +1,797 @@
+{
+  "id": "noche-de-cosecha",
+  "number": 2,
+  "title": "Noche de cosecha en Los Álamos",
+  "published": true,
+  "teaser": "Fiesta de cosecha en una bodega de Maipú. A la mañana, el dueño aparece muerto en la sala de los tanques.",
+  "phaseNames": [
+    "La sala de los tanques",
+    "La tarjeta",
+    "El tanque 7"
+  ],
+  "victim": {
+    "name": "Héctor Zárate",
+    "age": 63,
+    "photo": "victima.svg",
+    "look": {
+      "skin": "medio",
+      "hair": "pelado",
+      "hairColor": "canoso",
+      "clothes": "camisa",
+      "clothesColor": "blanco",
+      "facialHair": "bigote",
+      "expression": "sonrisa",
+      "glasses": false,
+      "earrings": false,
+      "necklace": false
+    }
+  },
+  "briefing": {
+    "title": "Informe inicial",
+    "blocks": [
+      {
+        "type": "image",
+        "src": "victima.svg",
+        "style": "polaroid",
+        "caption": "Héctor Zárate, 63 años",
+        "alt": "Retrato de Héctor Zárate: hombre canoso, de bigote y camisa blanca."
+      },
+      {
+        "type": "p",
+        "text": "Domingo, 06:40. Lucas Gómez, operario de la Bodega Los Álamos, en Maipú (Mendoza), encuentra a Héctor Zárate (63), dueño y enólogo, tirado en el piso de la sala de fermentación, en el subsuelo. Está muerto."
+      },
+      {
+        "type": "p",
+        "text": "La noche anterior la bodega hizo su fiesta de cosecha: sesenta invitados, parrilla y brindis en el patio. Héctor dejó la fiesta poco antes de las once."
+      },
+      {
+        "type": "p",
+        "text": "Cuatro personas tenían cuentas pendientes con Héctor esa noche: su esposa Inés, su hija Valeria, el jefe de bodega Ramiro Ortiz y Nicolás Ferro, un importador uruguayo."
+      },
+      {
+        "type": "note",
+        "text": "Cada uno de ustedes tiene evidencia distinta. Para avanzar van a tener que contarse lo que ven."
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "id": "F1",
+      "role": "forense",
+      "phase": 1,
+      "title": "Informe de autopsia",
+      "source": "Dr. Pablo Echegaray, médico forense",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Víctima",
+              "Héctor Zárate, 63 años"
+            ],
+            [
+              "Hora estimada de muerte",
+              "Entre las 23:40 y las 00:30"
+            ],
+            [
+              "Causa",
+              "Asfixia: respiró un aire con mucho dióxido de carbono y casi sin oxígeno"
+            ],
+            [
+              "Alcohol en sangre",
+              "0,6 g/l. Moderado, normal para alguien que estuvo en una fiesta"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Golpe leve en la frente, compatible con una caída al desmayarse. No hay otras lesiones ni señales de pelea."
+        },
+        {
+          "type": "p",
+          "text": "Las uñas de la mano derecha están quebradas y tienen restos de pintura gris."
+        },
+        {
+          "type": "note",
+          "text": "El dióxido de carbono no tiene olor ni color. En una sala con tanques fermentando se acumula cerca del piso y, en cantidad, desmaya en pocos minutos."
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "role": "forense",
+      "phase": 1,
+      "title": "Inspección de la sala de fermentación",
+      "source": "Relevada el domingo a las 07:05",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "sala-tanques.svg",
+          "style": "polaroid",
+          "caption": "Foto 1",
+          "text": "La puerta de chapa gris de la sala, vista desde adentro, con rayones a la altura de la manija. Atrás, los tanques de acero.",
+          "alt": "Vista desde adentro de la sala: la puerta de chapa gris tiene rayones y marcas de golpes a la altura de la manija. Al fondo, los tanques."
+        },
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Tanques 1 al 8",
+              "Sin pérdidas ni válvulas abiertas"
+            ],
+            [
+              "Tanque 7 (Cabernet)",
+              "Tapa de arriba abierta. Al lado, una probeta con una muestra y la libreta de Héctor"
+            ],
+            [
+              "Puerta de la sala",
+              "Se traba desde afuera con un pasador. Desde adentro no hay forma de abrirla si el pasador está puesto"
+            ],
+            [
+              "Dióxido de carbono a las 07:05",
+              "3,8 % a la altura del piso, con el extractor de aire ya funcionando"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Con el extractor andando, esta sala se ventila en unos quince minutos. Que todavía quede tanto gas indica que pasó muchas horas sin ventilación."
+        }
+      ]
+    },
+    {
+      "id": "I1",
+      "role": "investigador",
+      "phase": 1,
+      "title": "Sistema de control de la bodega",
+      "source": "Registro del tablero automático, sábado y domingo",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "tablero.svg",
+          "style": "doc",
+          "caption": "Pantalla del sistema",
+          "alt": "Pantalla del sistema de control de la bodega con el registro del extractor de la sala de fermentación."
+        },
+        {
+          "type": "log",
+          "title": "Extractor de aire · Sala de fermentación",
+          "rows": [
+            [
+              "22:00",
+              "Encendido. Automático, modo cosecha."
+            ],
+            [
+              "23:14",
+              "Apagado. Manual, desde el tablero del pasillo de servicio."
+            ],
+            [
+              "23:14",
+              "Alarma de gas de la sala pasada a modo mantenimiento: no suena."
+            ],
+            [
+              "06:42",
+              "Encendido. Manual, desde el tablero del pasillo de servicio."
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "El tablero del pasillo de servicio está a diez metros de la puerta de la sala. Para entrar a ese pasillo hace falta una tarjeta de acceso."
+        }
+      ]
+    },
+    {
+      "id": "I2",
+      "role": "investigador",
+      "phase": 1,
+      "title": "Declaraciones",
+      "source": "Tomadas el domingo a la mañana",
+      "blocks": [
+        {
+          "type": "quote",
+          "who": "Lucas Gómez, operario",
+          "text": "Bajé a las seis y cuarenta a ver los tanques. La puerta de la sala tenía el pasador puesto desde afuera, cosa que nunca hacemos si hay alguien adentro. Lo saqué, abrí y lo vi a don Héctor en el piso. Prendí el extractor y llamé al 911."
+        },
+        {
+          "type": "quote",
+          "who": "Facundo Ríos, mozo de la fiesta",
+          "text": "A las diez y veinte don Héctor y Valeria discutieron fuerte al lado de la barra. Ella le gritó que si no le vendía al Grupo Andino, la bodega se fundía."
+        },
+        {
+          "type": "quote",
+          "who": "Marta Videla, invitada",
+          "text": "Delante de todos, don Héctor le dijo a Nicolás Ferro que se terminaba la exclusividad con Uruguay. Nicolás se fue al rato, furioso."
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "role": "forense",
+      "phase": 2,
+      "title": "Hallazgos en el pasillo de servicio",
+      "source": "Relevados el domingo a las 08:30",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "tarjeta.svg",
+          "style": "polaroid",
+          "caption": "Foto 2",
+          "text": "Una tarjeta de acceso a nombre de V. ZÁRATE, trabada en la rejilla del desagüe, a tres metros del tablero.",
+          "alt": "Una tarjeta de acceso a nombre de V. Zárate trabada en la rejilla de un desagüe, con una mancha violeta en el borde."
+        },
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Tarjeta de V. Zárate",
+              "Mancha violeta en el borde. Huellas borroneadas: no se pueden identificar"
+            ],
+            [
+              "Palanca del extractor, en el tablero",
+              "Mancha violeta"
+            ],
+            [
+              "Pasador de la puerta de la sala",
+              "Restos violetas en la manija"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Las tres manchas parecen del mismo tipo. Se mandaron al laboratorio."
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "role": "forense",
+      "phase": 2,
+      "title": "Laboratorio: las manchas violetas",
+      "source": "Laboratorio de enología de la policía",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Qué son",
+              "Mosto de Malbec en plena fermentación, con levaduras vivas"
+            ],
+            [
+              "De dónde salió",
+              "Mismo perfil que el tanque 5. No coincide con el tanque 7, que es Cabernet ya fermentado"
+            ],
+            [
+              "Cuándo",
+              "Las manchas se hicieron esa misma noche"
+            ],
+            [
+              "Manos de Héctor",
+              "Solo Cabernet del tanque 7, de la muestra que estaba tomando. Nada del tanque 5"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "El mosto en fermentación tiñe la piel y la tela de violeta. Con agua sola no sale: dura horas."
+        }
+      ]
+    },
+    {
+      "id": "I3",
+      "role": "investigador",
+      "phase": 2,
+      "title": "Tarjetas de acceso y barrera",
+      "source": "Sistema de seguridad de la bodega, sábado y domingo",
+      "blocks": [
+        {
+          "type": "log",
+          "title": "Tarjetas",
+          "rows": [
+            [
+              "22:41",
+              "R. ORTIZ — Sala de remontaje (planta baja)"
+            ],
+            [
+              "23:02",
+              "H. ZÁRATE — Escalera al subsuelo"
+            ],
+            [
+              "23:12",
+              "V. ZÁRATE — Pasillo de servicio (subsuelo), entrada desde el patio"
+            ],
+            [
+              "06:38",
+              "L. GÓMEZ — Pasillo de servicio (subsuelo), entrada desde el patio"
+            ]
+          ]
+        },
+        {
+          "type": "log",
+          "title": "Barrera de la entrada",
+          "rows": [
+            [
+              "23:04",
+              "Sale el auto de Nicolás Ferro, patente uruguaya. No vuelve a entrar en toda la noche."
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Pizarrón de tareas de la bodega, sábado: «22:40 a 22:55 — Remontaje del tanque 5 — Ramiro»."
+        }
+      ]
+    },
+    {
+      "id": "I4",
+      "role": "investigador",
+      "phase": 2,
+      "title": "Fotos del fotógrafo de la fiesta",
+      "source": "Hora de cada foto según la cámara",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "brindis.svg",
+          "style": "polaroid",
+          "caption": "23:14 · El brindis",
+          "text": "Valeria arriba del escenario, con el micrófono y una copa, frente a los invitados.",
+          "alt": "Foto de la fiesta: Valeria arriba del escenario, con el micrófono y una copa, frente a los invitados."
+        },
+        {
+          "type": "log",
+          "rows": [
+            [
+              "22:56",
+              "Ramiro en la parrilla, con camisa celeste y las mangas manchadas de violeta."
+            ],
+            [
+              "23:00",
+              "Nicolás Ferro camina hacia el estacionamiento."
+            ],
+            [
+              "23:10 a 23:22",
+              "Valeria da el discurso y el brindis en el escenario. Nueve fotos seguidas."
+            ],
+            [
+              "23:31",
+              "Ramiro otra vez en la parrilla, con una camisa blanca."
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Entre las 22:56 y las 23:31 Ramiro no aparece en ninguna foto. Inés no aparece en ninguna después de las 22:45."
+        }
+      ]
+    },
+    {
+      "id": "F5",
+      "role": "forense",
+      "phase": 3,
+      "title": "Medición del tanque 7",
+      "source": "Peritaje enológico",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Litros según la planilla de ingreso",
+              "24.000"
+            ],
+            [
+              "Litros medidos",
+              "20.000"
+            ],
+            [
+              "Diferencia",
+              "4.000 litros, sin ningún registro de trasvase"
+            ]
+          ]
+        },
+        {
+          "type": "quote",
+          "who": "Libreta de Héctor, encontrada en la sala",
+          "text": "T7: otra vez faltan litros. ¿Por dónde salen?"
+        }
+      ]
+    },
+    {
+      "id": "F6",
+      "role": "forense",
+      "phase": 3,
+      "title": "Lo que apareció en el galpón y el vestuario",
+      "source": "Revisión de la bodega, domingo a la tarde",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Galpón de herramientas, detrás de unos pallets",
+              "Una manguera de trasvase de 30 metros con restos de vino"
+            ],
+            [
+              "Vino en la manguera",
+              "Cabernet, mismo perfil que el tanque 7"
+            ],
+            [
+              "Tacho de basura del vestuario del personal",
+              "Una camisa celeste con las mangas manchadas de mosto del tanque 5"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Todas las mangueras de la bodega están en su depósito. La del galpón no es de la bodega."
+        }
+      ]
+    },
+    {
+      "id": "I5",
+      "role": "investigador",
+      "phase": 3,
+      "title": "Celular de Héctor",
+      "source": "Mensajes de los últimos días",
+      "blocks": [
+        {
+          "type": "log",
+          "rows": [
+            [
+              "Viernes 18:02",
+              "Al contador: «El lunes revisamos el 7. Faltan litros y no es la primera vez.»"
+            ],
+            [
+              "Sábado 22:38",
+              "A Ramiro: «A las 11 bajo a medir el 7, yo solo. Mañana me explicás los números.» Leído a las 22:39. Sin respuesta."
+            ],
+            [
+              "Sábado 22:44",
+              "A Inés: «Bajo un rato a la sala y vuelvo.»"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I6",
+      "role": "investigador",
+      "phase": 3,
+      "title": "Los camiones de los domingos",
+      "source": "Barrera de la entrada, último mes, y una llamada a Vinos del Sur",
+      "blocks": [
+        {
+          "type": "log",
+          "title": "Barrera, domingos de madrugada",
+          "rows": [
+            [
+              "Dom. 21/3, 05:10",
+              "Entra un camión cisterna de Transportes Cuyo. Autorizó: R. Ortiz. Sale 05:55."
+            ],
+            [
+              "Dom. 28/3, 05:05",
+              "El mismo camión. Autorizó: R. Ortiz. Sale 05:50."
+            ],
+            [
+              "Dom. 4/4, 05:12",
+              "El mismo camión. Autorizó: R. Ortiz. Sale 05:58."
+            ]
+          ]
+        },
+        {
+          "type": "quote",
+          "who": "Encargado de compras de Vinos del Sur, San Rafael",
+          "text": "Sí, compramos Cabernet a granel, de a mil trescientos litros más o menos, a un tal Ramiro. Pagábamos en efectivo y nunca nos dio factura."
+        },
+        {
+          "type": "note",
+          "text": "Administración no tiene ningún remito de venta a granel en todo el año."
+        }
+      ]
+    }
+  ],
+  "suspects": [
+    {
+      "id": "valeria",
+      "name": "Valeria Zárate",
+      "age": 36,
+      "role": "Hija de Héctor, gerenta comercial",
+      "photo": "valeria.svg",
+      "look": {
+        "skin": "claro",
+        "hair": "melena",
+        "hairColor": "castaño",
+        "clothes": "blazer",
+        "clothesColor": "negro",
+        "facialHair": "ninguno",
+        "expression": "neutral",
+        "glasses": false,
+        "earrings": true,
+        "necklace": false
+      },
+      "statement": "Estuve en la fiesta toda la noche. A las once y diez di el discurso del brindis. Papá ya había bajado a la bodega.",
+      "questions": [
+        {
+          "id": "valeria-I2",
+          "evidence": "I2",
+          "answer": "Sí, le dije que si no vendíamos nos fundíamos. Es la verdad. Pero no se mata a un padre por una venta."
+        },
+        {
+          "id": "valeria-I3",
+          "evidence": "I3",
+          "answer": "¡Esa tarjeta la dejé en el bolsillo del blazer, colgado en la oficina, cuando me cambié para el brindis! A las 23:12 yo estaba arriba del escenario."
+        },
+        {
+          "id": "valeria-F3",
+          "evidence": "F3",
+          "answer": "¿Una mancha violeta? Esa noche no pisé la bodega. Mírenme las manos si quieren."
+        },
+        {
+          "id": "valeria-I6",
+          "evidence": "I6",
+          "answer": "¿Un camión cisterna los domingos? Papá jamás vendía a granel. Decía que era regalar el vino."
+        }
+      ]
+    },
+    {
+      "id": "ramiro",
+      "name": "Ramiro Ortiz",
+      "age": 47,
+      "role": "Jefe de bodega",
+      "photo": "ramiro.svg",
+      "look": {
+        "skin": "trigueño",
+        "hair": "corto",
+        "hairColor": "castaño",
+        "clothes": "remera",
+        "clothesColor": "gris",
+        "facialHair": "barba",
+        "expression": "seria",
+        "glasses": false,
+        "earrings": false,
+        "necklace": false
+      },
+      "statement": "Hice el remontaje del tanque 5 a las diez y media y volví a la parrilla. Estuve ahí hasta la una. A la sala de abajo no bajé.",
+      "questions": [
+        {
+          "id": "ramiro-I3",
+          "evidence": "I3",
+          "answer": "La tarjeta de Valeria la habrá usado Valeria. Yo después del remontaje volví a la parrilla y no me moví."
+        },
+        {
+          "id": "ramiro-F4",
+          "evidence": "F4",
+          "answer": "¿Mosto del 5? Obvio, si hice el remontaje del 5. Pero eso fue a las diez y media, antes de que Héctor bajara."
+        },
+        {
+          "id": "ramiro-I4",
+          "evidence": "I4",
+          "answer": "Fui al vestuario a cambiarme la camisa, estaba toda manchada. Fueron cinco minutos."
+        },
+        {
+          "id": "ramiro-I5",
+          "evidence": "I5",
+          "answer": "Ese mensaje no lo vi. Tenía el celular en la campera."
+        },
+        {
+          "id": "ramiro-F6",
+          "evidence": "F6",
+          "answer": "Esa manguera no la vi en mi vida. (Se queda callado y pide hablar con un abogado.)"
+        }
+      ]
+    },
+    {
+      "id": "ines",
+      "name": "Inés Lucero",
+      "age": 58,
+      "role": "Esposa de Héctor",
+      "photo": "ines.svg",
+      "look": {
+        "skin": "claro",
+        "hair": "rodete",
+        "hairColor": "canoso",
+        "clothes": "cardigan",
+        "clothesColor": "verde",
+        "facialHair": "ninguno",
+        "expression": "seria",
+        "glasses": true,
+        "earrings": false,
+        "necklace": true
+      },
+      "statement": "Me dolía la cabeza y me fui a la casa antes de las once. Me acosté y no me enteré de nada hasta que Lucas me golpeó la puerta a la mañana.",
+      "questions": [
+        {
+          "id": "ines-F1",
+          "evidence": "F1",
+          "answer": "Héctor bajaba a esa sala desde hacía treinta años. Siempre decía que con el extractor apagado no se entra. Él nunca lo habría apagado."
+        },
+        {
+          "id": "ines-I3",
+          "evidence": "I3",
+          "answer": "Yo ni tengo tarjeta de ese pasillo. No sabría ni dónde está el tablero."
+        },
+        {
+          "id": "ines-I5",
+          "evidence": "I5",
+          "answer": "Sí, me avisó que bajaba un rato. Yo ya estaba acostada. Esa semana andaba preocupado por unos números del tanque 7, pero no me quiso contar más."
+        }
+      ]
+    },
+    {
+      "id": "nicolas",
+      "name": "Nicolás Ferro",
+      "age": 44,
+      "role": "Importador uruguayo de los vinos de la bodega",
+      "photo": "nicolas.svg",
+      "look": {
+        "skin": "medio",
+        "hair": "corto",
+        "hairColor": "negro",
+        "clothes": "saco",
+        "clothesColor": "gris",
+        "facialHair": "barba_de_dias",
+        "expression": "neutral",
+        "glasses": false,
+        "earrings": false,
+        "necklace": false
+      },
+      "statement": "Tuve una discusión de negocios con Héctor y me fui a eso de las once. Dormí en un hotel de Maipú.",
+      "questions": [
+        {
+          "id": "nicolas-I2",
+          "evidence": "I2",
+          "answer": "Me cortó la exclusividad delante de todos, después de ocho años. Me fui enojado, sí. Pero me fui."
+        },
+        {
+          "id": "nicolas-I3",
+          "evidence": "I3",
+          "answer": "Ahí lo tienen: salí a las 23:04 y no volví. Y tarjeta de la bodega nunca tuve."
+        },
+        {
+          "id": "nicolas-F5",
+          "evidence": "F5",
+          "answer": "¿Faltan cuatro mil litros? Hace meses que alguien ofrece Cabernet de Maipú a granel, baratísimo. A mí también me lo ofrecieron. No lo compré."
+        }
+      ]
+    }
+  ],
+  "gates": {
+    "1": {
+      "question": "¿Qué mató a Héctor?",
+      "options": [
+        {
+          "id": "golpe",
+          "label": "Se cayó y se golpeó la cabeza"
+        },
+        {
+          "id": "roto",
+          "label": "El gas de la fermentación: el extractor se rompió"
+        },
+        {
+          "id": "apagado",
+          "label": "El gas de la fermentación: alguien apagó el extractor"
+        },
+        {
+          "id": "infarto",
+          "label": "Un infarto"
+        }
+      ],
+      "correct": "apagado",
+      "hints": [
+        "¿Qué dice la autopsia y qué pasaba con el aire de la sala esa noche?",
+        "Crucen la causa de la muerte con el registro del extractor.",
+        "El gas de la fermentación: alguien apagó el extractor."
+      ]
+    },
+    "2": {
+      "question": "¿Quién usó la tarjeta de Valeria a las 23:12?",
+      "options": [
+        {
+          "id": "valeria",
+          "label": "Valeria Zárate"
+        },
+        {
+          "id": "ramiro",
+          "label": "Ramiro Ortiz"
+        },
+        {
+          "id": "ines",
+          "label": "Inés Lucero"
+        },
+        {
+          "id": "nicolas",
+          "label": "Nicolás Ferro"
+        }
+      ],
+      "correct": "ramiro",
+      "hints": [
+        "A esa hora, Valeria tenía cientos de testigos.",
+        "¿Qué tenía la tarjeta encima, y quién trabajó con ese tanque esa noche?",
+        "Ramiro Ortiz."
+      ]
+    }
+  },
+  "accusation": {
+    "hints": [
+      "¿Qué estaba midiendo Héctor cuando murió?",
+      "Crucen el tanque 7 con la manguera del galpón y los camiones de los domingos.",
+      "Ramiro robaba vino del tanque 7. Usó la tarjeta de Valeria y después se cambió la camisa manchada."
+    ],
+    "parts": [
+      {
+        "id": "who",
+        "question": "¿Quién mató a Héctor?",
+        "options": [
+          {
+            "id": "valeria",
+            "label": "Valeria Zárate"
+          },
+          {
+            "id": "ramiro",
+            "label": "Ramiro Ortiz"
+          },
+          {
+            "id": "ines",
+            "label": "Inés Lucero"
+          },
+          {
+            "id": "nicolas",
+            "label": "Nicolás Ferro"
+          }
+        ],
+        "correct": "ramiro"
+      },
+      {
+        "id": "how",
+        "question": "¿Cómo trató de no dejar rastros?",
+        "options": [
+          {
+            "id": "tarjeta",
+            "label": "Usó la tarjeta de Valeria y después se cambió la camisa manchada"
+          },
+          {
+            "id": "guantes",
+            "label": "Usó guantes de trabajo y los tiró en un tanque"
+          },
+          {
+            "id": "registros",
+            "label": "Borró los registros del tablero"
+          },
+          {
+            "id": "lucas",
+            "label": "Le pidió a Lucas que prendiera el extractor temprano"
+          }
+        ],
+        "correct": "tarjeta"
+      },
+      {
+        "id": "why",
+        "question": "¿Por qué lo hizo?",
+        "options": [
+          {
+            "id": "venta",
+            "label": "No quería que la bodega se vendiera al Grupo Andino"
+          },
+          {
+            "id": "robo",
+            "label": "Héctor iba a descubrir que robaba vino del tanque 7"
+          },
+          {
+            "id": "exclusividad",
+            "label": "Héctor le había cortado un negocio con Uruguay"
+          },
+          {
+            "id": "herencia",
+            "label": "Quería quedarse con la herencia"
+          }
+        ],
+        "correct": "robo"
+      }
+    ]
+  },
+  "solution": [
+    "El asesino es Ramiro Ortiz, el jefe de bodega. Desde hacía un mes sacaba vino del tanque 7 los domingos de madrugada: lo pasaba con una manguera propia a un camión cisterna que él mismo autorizaba en la barrera y se lo vendía en efectivo a Vinos del Sur. Faltaban 4.000 litros, y Héctor se había dado cuenta.",
+    "El sábado a las 22:38 Héctor le escribió que a las once bajaba solo a medir el tanque 7. Ramiro leyó el mensaje y vio su oportunidad. Acababa de hacer el remontaje del tanque 5 y tenía las mangas manchadas de mosto.",
+    "A las 23:12 entró al pasillo de servicio con la tarjeta de Valeria, que había sacado del blazer colgado en la oficina. Apagó el extractor, pasó la alarma de gas a mantenimiento y trabó la puerta de la sala con el pasador. En la tarjeta, en la palanca y en el pasador quedó el mosto del tanque 5. Después tiró la tarjeta en el desagüe.",
+    "Héctor quedó encerrado mientras el gas de la fermentación llenaba la sala. Intentó abrir la puerta, por eso los rayones y las uñas quebradas, hasta que se desmayó. Murió cerca de la medianoche.",
+    "Ramiro tiró la camisa celeste en el vestuario, se puso una blanca y a las 23:31 ya estaba otra vez en la parrilla, como si nada. La manguera con la que sacaba el vino quedó escondida en el galpón."
+  ]
+}

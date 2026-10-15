@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+<defs><linearGradient id="steel" x1="0" x2="1"><stop offset="0" stop-color="#8b9499"/><stop offset="0.45" stop-color="#d3d8da"/><stop offset="1" stop-color="#7a8287"/></linearGradient>
+<radialGradient id="flash" cx="50%" cy="45%" r="65%"><stop offset="0" stop-color="#fff8e0" stop-opacity="0.35"/><stop offset="1" stop-color="#000" stop-opacity="0.45"/></radialGradient></defs>
+<rect width="480" height="360" fill="#5b5f5c"/>
+<rect y="270" width="480" height="90" fill="#3e413f"/>
+<g stroke="#4a4d4b"><line x1="0" y1="285" x2="480" y2="285"/><line x1="0" y1="303" x2="480" y2="303"/><line x1="0" y1="321" x2="480" y2="321"/><line x1="0" y1="339" x2="480" y2="339"/><line x1="0" y1="357" x2="480" y2="357"/></g>
+<rect x="20" y="40" width="70" height="230" rx="10" fill="url(#steel)"/><ellipse cx="55" cy="40" rx="35" ry="8" fill="#b9c0c4"/><rect x="38" y="110" width="34" height="18" fill="#e9e4d6"/><text x="55" y="123" text-anchor="middle" font-family="monospace" font-size="11" fill="#333">T5</text><circle cx="55" cy="235" r="7" fill="#7d868b"/><rect x="110" y="40" width="70" height="230" rx="10" fill="url(#steel)"/><ellipse cx="145" cy="40" rx="35" ry="8" fill="#b9c0c4"/><rect x="128" y="110" width="34" height="18" fill="#e9e4d6"/><text x="145" y="123" text-anchor="middle" font-family="monospace" font-size="11" fill="#333">T6</text><circle cx="145" cy="235" r="7" fill="#7d868b"/><rect x="330" y="40" width="70" height="230" rx="10" fill="url(#steel)"/><ellipse cx="365" cy="40" rx="35" ry="8" fill="#b9c0c4"/><rect x="348" y="110" width="34" height="18" fill="#e9e4d6"/><text x="365" y="123" text-anchor="middle" font-family="monospace" font-size="11" fill="#333">T7</text><circle cx="365" cy="235" r="7" fill="#7d868b"/><rect x="420" y="40" width="70" height="230" rx="10" fill="url(#steel)"/><ellipse cx="455" cy="40" rx="35" ry="8" fill="#b9c0c4"/><rect x="438" y="110" width="34" height="18" fill="#e9e4d6"/><text x="455" y="123" text-anchor="middle" font-family="monospace" font-size="11" fill="#333">T8</text><circle cx="455" cy="235" r="7" fill="#7d868b"/>
+<!-- puerta de chapa gris -->
+<rect x="196" y="70" width="110" height="200" fill="#4a4e4c"/>
+<rect x="202" y="76" width="98" height="194" fill="#8d9290"/>
+<rect x="282" y="160" width="12" height="26" rx="3" fill="#3a3c3b"/>
+<path d="M200 150.0 l14 30" stroke="#d9dcd6" stroke-width="2"/><path d="M207 154.2 l16 30" stroke="#d9dcd6" stroke-width="2"/><path d="M214 158.4 l18 30" stroke="#d9dcd6" stroke-width="2"/><path d="M221 162.6 l15 30" stroke="#d9dcd6" stroke-width="2"/><path d="M228 166.8 l17 30" stroke="#d9dcd6" stroke-width="2"/><path d="M235 171.0 l14 30" stroke="#d9dcd6" stroke-width="2"/><path d="M242 175.2 l16 30" stroke="#d9dcd6" stroke-width="2"/><path d="M249 179.4 l18 30" stroke="#d9dcd6" stroke-width="2"/><path d="M256 183.6 l15 30" stroke="#d9dcd6" stroke-width="2"/>
+<path d="M226 170 l8 -5 l-3 9 l9 -3" stroke="#d9dcd6" stroke-width="2" fill="none"/>
+<text x="251" y="100" text-anchor="middle" font-family="monospace" font-size="11" fill="#3a3c3b">SALA DE FERMENTACIÓN</text>
+<text x="251" y="114" text-anchor="middle" font-family="monospace" font-size="7" fill="#5c1d16">NO INGRESAR CON EXTRACTOR APAGADO</text>
+<!-- probeta y libreta en el piso, junto al tanque 7 -->
+<rect x="348" y="292" width="10" height="40" rx="3" fill="#e8eef0" opacity="0.8"/><rect x="349" y="312" width="8" height="19" fill="#5b1a2a"/>
+<rect x="372" y="312" width="44" height="30" fill="#c9b27a" transform="rotate(-10 394 327)"/>
+<rect width="480" height="360" fill="url(#flash)"/>
+</svg>
