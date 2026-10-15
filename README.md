@@ -66,3 +66,4 @@ Arrancan con 1.000 puntos.
 ## Agregar un caso nuevo
 
 Copiá `lib/case/las-toscas.js` con la misma estructura (evidencias con `role` y `phase`, sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` y `solution`). Por ahora el juego importa un solo caso; para tener varios, falta guardar `caseId` al crear la sala y elegir el caso desde la landing.
+# expediente
