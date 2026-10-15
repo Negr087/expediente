@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Las imágenes de los casos se leen del disco en la API: hay que incluirlas en el deploy.
+  // Los casos y sus imágenes se leen del disco: hay que incluirlos en el deploy.
   outputFileTracingIncludes: {
+    '/**': ['./casos/**/*'],
     '/api/rooms/[code]/media/[file]': ['./media/**/*'],
   },
 };

@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function StartForm() {
+export default function StartForm({ cases }) {
   const router = useRouter();
+  const [caseId, setCaseId] = useState(cases[0]?.id);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -16,7 +17,7 @@ export default function StartForm() {
       const res = await fetch('/api/rooms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode }),
+        body: JSON.stringify({ mode, caseId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -39,6 +40,21 @@ export default function StartForm() {
 
   return (
     <>
+      {cases.length > 1 && (
+        <fieldset className="case-pick">
+          <legend>Elegí el caso</legend>
+          {cases.map((c) => (
+            <label key={c.id} className="case-option">
+              <input type="radio" name="caso" value={c.id} checked={caseId === c.id} onChange={() => setCaseId(c.id)} />
+              <span>
+                <strong>N.º {String(c.number).padStart(2, '0')} · {c.title}</strong>
+                {c.draft && <em className="draft">Borrador</em>}
+                {c.teaser && <small>{c.teaser}</small>}
+              </span>
+            </label>
+          ))}
+        </fieldset>
+      )}
       <div className="start-modes">
         <button className="mode-btn" onClick={() => create('solo')} disabled={Boolean(busy)}>
           <strong>{busy === 'solo' ? 'Creando…' : 'Jugar en un celular'}</strong>

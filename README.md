@@ -9,7 +9,7 @@ Hay dos modos, que se eligen al crear la partida:
 
 En los dos modos, cada fase nueva abre un aviso con lo que le toca leer a cada uno, y el expediente arranca con un "Qué hacer ahora" que marca lo que ya leyeron.
 
-Caso incluido: **#01 — Última partida en Las Toscas**.
+Caso incluido: **#01 — Última partida en Las Toscas**. Se pueden sumar más a mano o generarlos con Claude (ver abajo).
 
 ## Probarlo en local
 
@@ -48,15 +48,21 @@ components/
   StartForm.js                Crear partida / unirse con código
   Game.js                     Todas las pantallas del juego
 lib/
-  case/las-toscas.js          El caso: evidencias, sospechosos, respuestas (solo servidor)
+  cases/index.js              Carga los casos de casos/ (solo servidor)
+  cases/shared.mjs            Roles y validación de un caso
+  cases/portrait.mjs          Retratos dibujados a partir de rasgos
   game.js                     Reglas, puntaje y lo que se le muestra a cada jugador
   store.js                    Guardado en Supabase o en memoria
+casos/
+  las-toscas.json             Cada caso es un JSON: evidencias, sospechosos, respuestas
+scripts/
+  generar-caso.mjs            Genera un caso nuevo con Claude
 media/
   las-toscas/                 Retratos, cámaras de seguridad y fotos de la escena
 supabase/schema.sql
 ```
 
-**Anti-trampa:** el archivo del caso tiene `import 'server-only'`, así que nunca llega al navegador. Las respuestas se validan en el servidor y cada evidencia se entrega solo al rol que corresponde y cuando se desbloquea su fase.
+**Anti-trampa:** los casos se leen del disco solo en el servidor (`lib/cases/index.js` tiene `import 'server-only'`), así que nunca llegan al navegador. Las respuestas se validan en el servidor y cada evidencia se entrega solo al rol que corresponde y cuando se desbloquea su fase.
 
 **Sincronización:** cada celular consulta el estado de la sala cada 2,5 segundos. Para dos jugadores alcanza y sobra; si más adelante hace falta, se puede cambiar por Supabase Realtime.
 
@@ -84,5 +90,30 @@ Arrancan con 1.000 puntos.
 
 ## Agregar un caso nuevo
 
-Copiá `lib/case/las-toscas.js` con la misma estructura (evidencias con `role`, `phase` y bloques de texto o de imagen, sospechosos con `photo`, sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` y `solution`). Por ahora el juego importa un solo caso; para tener varios, falta guardar `caseId` al crear la sala y elegir el caso desde la landing.
+Cada caso es un archivo en `casos/<id>.json` y sus imágenes van en `media/<id>/`. Al crear la partida se elige el caso, y cada sala guarda cuál usa.
+
+Un caso con `"published": false` es un **borrador**: aparece en local (`npm run dev`, marcado como Borrador) pero no en producción. Para publicarlo, cambiá a `"published": true` y hacé deploy.
+
+### A mano
+
+Copiá `casos/las-toscas.json` y cambiá el contenido. La estructura: evidencias con `role`, `phase` y bloques (`p`, `note`, `kv`, `log`, `quote`, `image`), sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` (`who`, `how`, `why`) y `solution`.
+
+### Con Claude
+
+1. Sacá una API key en https://platform.claude.com/settings/keys y agregala a `.env` como `ANTHROPIC_API_KEY`.
+2. Corré:
+
+   ```bash
+   npm run generar-caso                                   # Claude elige el escenario
+   npm run generar-caso -- "una bodega en Mendoza durante la vendimia"
+   ```
+
+El script le pide el caso a Claude Opus 5.5 usando Las Toscas como ejemplo de formato y calidad, y después lo revisa:
+
+- **Estructura:** que cada pregunta apunte a una evidencia que existe, que cada fase tenga evidencia para los dos roles, que las respuestas correctas estén entre las opciones, etc.
+- **Que se pueda resolver:** otro llamado a Claude juega el caso solo con la evidencia. Si responde algo distinto de la solución, o si con la evidencia de un solo rol ya alcanza para saber quién fue, le pide a Claude que lo corrija (hasta 2 veces).
+
+Al final guarda el borrador en `casos/` y muestra el costo aproximado (alrededor de US$1 por caso). Los sospechosos y la víctima traen rasgos (`look`) y la API dibuja sus retratos; no hace falta subir imágenes.
+
+Jugalo entero antes de publicarlo: la revisión automática ayuda, pero no reemplaza a una persona.
 # expediente

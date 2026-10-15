@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "generar-caso": "node --env-file-if-exists=.env scripts/generar-caso.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.134.0",
     "@supabase/supabase-js": "^2.117.3",
     "next": "^15.5.28",
     "qrcode": "^1.5.4",

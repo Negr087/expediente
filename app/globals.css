@@ -915,3 +915,33 @@ div.role-option { cursor: default; }
   padding: 1px 7px;
   border-radius: 10px;
 }
+
+/* Elegir caso */
+.case-pick { border: 0; padding: 0; margin: 0 0 14px; display: grid; gap: 8px; }
+.case-pick legend { font-weight: 600; margin-bottom: 8px; }
+.case-option {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border: 1px solid var(--rio-3);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.case-option:has(input:checked) { border-color: var(--kraft); background: var(--rio-2); }
+.case-option input { accent-color: var(--kraft); width: 18px; height: 18px; margin: 3px 0 0; flex: none; }
+.case-option strong { display: block; font-family: var(--display); font-weight: 400; font-size: 19px; line-height: 1.25; }
+.case-option small { display: block; color: var(--niebla); font-size: 14px; line-height: 1.4; margin-top: 2px; }
+.case-option .draft {
+  display: inline-block;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--sello);
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: 10px;
+  margin-top: 4px;
+}

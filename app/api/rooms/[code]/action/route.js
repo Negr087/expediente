@@ -1,5 +1,6 @@
 import { handle, normalizeCode } from '@/lib/api';
-import { updateRoom, GameError } from '@/lib/store';
+import { getRoom, updateRoom, GameError } from '@/lib/store';
+import { loadCase } from '@/lib/cases';
 import { join, answerGate, takeHint, ask, accuse, publicState } from '@/lib/game';
 
 export async function POST(request, { params }) {
@@ -7,6 +8,11 @@ export async function POST(request, { params }) {
     const code = normalizeCode((await params).code);
     const body = await request.json().catch(() => ({}));
     const { player, type } = body;
+
+    // El caso no cambia durante la partida: se carga una vez antes de aplicar la acción.
+    const room = await getRoom(code);
+    if (!room) throw new GameError('No existe una partida con ese código.', 404);
+    await loadCase(room.state.caseId);
 
     const state = await updateRoom(code, (s) => {
       switch (type) {

@@ -1,6 +1,8 @@
 import StartForm from '@/components/StartForm';
+import { listCases } from '@/lib/cases';
 
-export default function Home() {
+export default async function Home() {
+  const cases = await listCases();
   return (
     <main className="landing">
       <a className="brand" href="/">Expediente</a>
@@ -13,7 +15,7 @@ export default function Home() {
             resolverlo solo: van a tener que hablar, cruzar lo que tienen y acusar juntos. Jueguen con un
             celular o con uno cada uno.
           </p>
-          <StartForm />
+          <StartForm cases={cases} />
         </div>
 
         <div className="folder" aria-hidden="true">
