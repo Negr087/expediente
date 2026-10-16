@@ -85,7 +85,7 @@ Las que vienen ahora son ilustraciones SVG. Para cambiarlas por fotos reales (o 
 
 ## Armá tu caso
 
-En `/arma-tu-caso` cualquiera pide un caso a medida: dónde pasa, la víctima, de 3 a 4 sospechosos con su relación, fotos opcionales, quién es el culpable (o sorpresa) y detalles extra. Recibe un link `/pedido/<ID>` donde ve el estado (recibido, en preparación, listo) y, cuando está listo, lo juega desde ahí.
+En `/arma-tu-caso` cualquiera pide un caso a medida: cuánto dura (20, 40 o 60 minutos), dónde pasa, la víctima, de 3 a 4 sospechosos con su relación, fotos opcionales, quién es el culpable (o sorpresa) y detalles extra. Recibe un link `/pedido/<ID>` donde ve el estado (recibido, en preparación, listo) y, cuando está listo, lo juega desde ahí.
 
 - **Privado:** el caso no aparece en el inicio. Solo se juega con el link del pedido.
 - **Fotos:** se achican en el celular, el servidor las recorta y les borra los metadatos (por ejemplo la ubicación GPS) y quedan en un bucket privado de Supabase. Solo se ven dentro de ese caso. Para subirlas hay que confirmar que se tiene permiso de esas personas. Sin foto, se usa el retrato dibujado.
@@ -120,7 +120,7 @@ Arrancan con 1.000 puntos.
 | Pistas 1, 2 y 3 de una fase | −50, −100, −200 |
 | Respuesta incorrecta para pasar de fase | −25 |
 | Acusación incorrecta (hay 2 intentos) | −300 |
-| Cada 10 minutos pasados los 60 | −20 |
+| Cada 10 minutos pasado el doble de la duración del caso (40 min en un caso de 20) | −20 |
 
 ## Agregar un caso nuevo
 
@@ -136,6 +136,7 @@ Copiá `casos/las-toscas.json` y cambiá el contenido. La estructura: evidencias
 
 `npm run receta` sortea el diseño de un caso nuevo entre muchas opciones (en `lib/cases/variety.mjs`):
 
+- **Duración:** corto (~20 min, 3 fases), medio (~40 min, 4 fases, una historia secundaria) o largo (~60 min, 5 fases, dos historias secundarias y doble giro). `npm run receta -- medio`.
 - **Qué pasó:** asesinato, envenenamiento lento, desaparición, robo imposible, accidente encubierto, sabotaje o estafa.
 - **Giro:** la hora es falsa, la víctima equivocada, dos culpables, el que encontró el cuerpo, el testigo clave…
 - **Quién es el culpable:** el más querible, el que ayuda a investigar, el más joven, el de afuera…

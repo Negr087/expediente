@@ -61,7 +61,7 @@ export default async function Home() {
           </li>
           <li>
             <h3>Resuelvan juntos</h3>
-            <p>Miren las cámaras, las fotos de la escena y las caras de los sospechosos. Respondan para abrir evidencia nueva y acusen al culpable. Entre 60 y 90 minutos.</p>
+            <p>Miren las cámaras, las fotos de la escena y las caras de los sospechosos. Respondan para abrir evidencia nueva y acusen al culpable. Cada caso dura entre 20 minutos y una hora.</p>
           </li>
         </ol>
       </section>

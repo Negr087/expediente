@@ -9,6 +9,12 @@ const TONOS = [
   ['oscuro', 'Más oscuro (sin gore)'],
 ];
 
+const DURACIONES = [
+  ['corto', 'Corto, unos 20 minutos'],
+  ['medio', 'Medio, unos 40 minutos'],
+  ['largo', 'Largo, alrededor de una hora'],
+];
+
 const emptyPerson = () => ({ nombre: '', edad: '', relacion: '', rasgos: '' });
 
 // Achica la foto en el celular antes de subirla: el envío queda liviano.
@@ -66,6 +72,7 @@ export default function CaseRequestForm() {
   const [contacto, setContacto] = useState('');
   const [tema, setTema] = useState('');
   const [tono, setTono] = useState('clasico');
+  const [duracion, setDuracion] = useState('corto');
   const [victima, setVictima] = useState({ nombre: '', edad: '', descripcion: '' });
   const [sospechosos, setSospechosos] = useState(() => [emptyPerson(), emptyPerson(), emptyPerson(), emptyPerson()]);
   const [culpable, setCulpable] = useState('sorpresa');
@@ -94,7 +101,7 @@ export default function CaseRequestForm() {
     setBusy(true);
     try {
       const body = new FormData();
-      body.set('datos', JSON.stringify({ contacto, tema, tono, victima, sospechosos, culpable, extras, permisoFotos: permiso }));
+      body.set('datos', JSON.stringify({ contacto, tema, tono, duracion, victima, sospechosos, culpable, extras, permisoFotos: permiso }));
       body.set('web', e.target.elements.web.value);
       for (const [slot, f] of Object.entries(fotos)) if (f) body.set(`foto-${slot}`, f, `${slot}.jpg`);
       const res = await fetch('/api/pedidos', { method: 'POST', body });
@@ -134,6 +141,16 @@ export default function CaseRequestForm() {
             placeholder="Ej.: el cumpleaños de 40 de Caro en una quinta de Pilar, un sábado de lluvia."
           />
         </label>
+        <fieldset className="duration-pick">
+          <legend>¿Cuánto querés que dure?</legend>
+          {DURACIONES.map(([id, label]) => (
+            <label key={id} className="duration-option">
+              <input type="radio" name="duracion" value={id} checked={duracion === id} onChange={() => setDuracion(id)} />
+              <span>{label}</span>
+            </label>
+          ))}
+          <p className="form-help">Los más largos tienen más fases, más evidencia, más sospechosos y alguna historia secundaria.</p>
+        </fieldset>
         <label className="field">
           <span>Tono</span>
           <select value={tono} onChange={(e) => setTono(e.target.value)}>

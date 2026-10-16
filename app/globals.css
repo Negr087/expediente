@@ -313,7 +313,10 @@ button, input, select { font: inherit; color: inherit; }
   margin: 16px 0 8px;
 }
 .phase {
-  padding: 8px 10px;
+  padding: 8px 6px;
+  min-width: 0;
+  hyphens: auto;
+  overflow-wrap: break-word;
   border-top: 3px solid var(--rio-3);
   font-size: 13px;
   color: var(--niebla);
@@ -932,6 +935,13 @@ div.role-option { cursor: default; }
 .case-option input { accent-color: var(--kraft); width: 18px; height: 18px; margin: 3px 0 0; flex: none; }
 .case-option strong { display: block; font-family: var(--display); font-weight: 400; font-size: 19px; line-height: 1.25; }
 .case-option small { display: block; color: var(--niebla); font-size: 14px; line-height: 1.4; margin-top: 2px; }
+.case-option .duration {
+  display: inline-block;
+  font-style: normal;
+  font-size: 12px;
+  color: var(--kraft);
+  margin: 4px 8px 0 0;
+}
 .case-option .draft {
   display: inline-block;
   font-style: normal;
@@ -1031,3 +1041,9 @@ div.role-option { cursor: default; }
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
 }
 .phone video { display: block; width: 100%; height: auto; aspect-ratio: 1 / 2; border-radius: 26px; background: var(--rio); }
+
+.duration-pick { border: 0; padding: 0; margin: 0 0 12px; }
+.duration-pick legend { font-family: var(--ui); font-size: 14px; color: var(--niebla); margin-bottom: 6px; }
+.duration-option { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--rio-3); border-radius: 3px; margin: 0 0 6px; cursor: pointer; }
+.duration-option:has(input:checked) { border-color: var(--kraft); background: var(--rio-2); }
+.duration-option input { accent-color: var(--kraft); width: 18px; height: 18px; margin: 0; }

@@ -3,14 +3,18 @@
   "number": 2,
   "title": "Robo en el refugio Laguna Escondida",
   "published": true,
+  "duration": 20,
   "teaser": "Amalia festejó sus 82 en su refugio de montaña. A la mañana, la caja fuerte estaba abierta y el sospechoso de siempre ya tenía antecedentes.",
   "design": {
     "crimen": "robo-imposible",
     "giro": "culpable-obvio-inocente",
     "culpable": "familiar-cercano",
     "motivo": "herencia",
-    "pregunta1": "objeto",
-    "pregunta2": "coartada-falsa",
+    "duracion": "corto",
+    "preguntas": [
+      "objeto",
+      "coartada-falsa"
+    ],
     "mecanicas": [
       "musica",
       "animal",

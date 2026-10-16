@@ -1,6 +1,7 @@
 import { handle } from '@/lib/api';
 import { GameError } from '@/lib/store';
 import { getPedido } from '@/lib/pedidos/store.mjs';
+import { DURATIONS } from '@/lib/cases/shared.mjs';
 
 // Lo que ve quien hizo el pedido: el estado y, cuando está listo, cómo jugarlo.
 // Nunca el contenido del caso.
@@ -14,6 +15,7 @@ export async function GET(request, { params }) {
       status: p.status,
       createdAt: p.created_at,
       tema: p.data.tema,
+      duracion: DURATIONS[p.data.duracion ?? 'corto'].label,
       personajes: [p.data.victima.nombre, ...p.data.sospechosos.map((s) => s.nombre)],
       note: p.status === 'rechazado' ? p.note : null,
       case: p.status === 'listo' && p.case_data

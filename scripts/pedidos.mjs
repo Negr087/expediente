@@ -16,7 +16,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import {
   listPedidos, getPedido, updatePedido, getPhoto, usingSupabase,
 } from '../lib/pedidos/store.mjs';
-import { validateCase } from '../lib/cases/shared.mjs';
+import { validateCase, DURATIONS } from '../lib/cases/shared.mjs';
 import { sendDm, nostrConfig } from '../lib/nostr/avisos.mjs';
 
 function fail(msg) {
@@ -82,9 +82,11 @@ const commands = {
       fail(`No se pudo leer ${file}: ${err.message}`);
     }
     const caseId = `p-${p.id.toLowerCase()}`;
-    c = { ...c, id: caseId, private: true, published: false, pedido: p.id, number: null };
+    const dur = DURATIONS[p.data.duracion ?? 'corto'];
+    c = { ...c, id: caseId, private: true, published: false, pedido: p.id, number: null, duration: dur.minutes };
 
     const problems = validateCase(c);
+    if (c.phaseNames?.length !== dur.phases) problems.push(`El pedido es ${dur.label.toLowerCase()}: el caso tiene que tener ${dur.phases} fases y tiene ${c.phaseNames?.length ?? 0}.`);
     const fotos = new Set(photosOf(p));
     for (const person of [c.victim, ...(c.suspects ?? [])].filter(Boolean)) {
       if (!person.look && !person.photo) problems.push(`${person.name}: le falta "look" o "photo".`);

@@ -114,6 +114,7 @@ export default function PedidoStatus({ id }) {
 
       <div className="pedido-summary">
         <p><span>Historia</span>{pedido.tema}</p>
+        <p><span>Duración</span>{pedido.duracion}</p>
         <p><span>Personajes</span>{pedido.personajes.join(', ')}</p>
       </div>
       <button className="btn btn-ghost" onClick={copy}>{copied ? 'Link copiado' : 'Copiar el link de este pedido'}</button>

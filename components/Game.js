@@ -234,7 +234,7 @@ export default function Game({ code }) {
             {[
               ['expediente', 'Expediente', unseenEvidence],
               ['sospechosos', 'Sospechosos', unseenAnswers],
-              ['resolver', room.phase < 3 ? 'Avanzar' : 'Acusar', 0],
+              ['resolver', room.phase < room.phaseNames.length ? 'Avanzar' : 'Acusar', 0],
             ].map(([id, label, badge]) => (
               <button key={id} className="tab" role="tab" aria-selected={tab === id} onClick={() => goTo(id)}>
                 {label}
@@ -445,7 +445,7 @@ function RoleStrip({ room }) {
 
 function PhaseTrack({ phase, names }) {
   return (
-    <div className="phases" aria-label={`Fase ${phase} de 3`}>
+    <div className="phases" aria-label={`Fase ${phase} de ${names.length}`} style={{ gridTemplateColumns: `repeat(${names.length}, 1fr)` }}>
       {names.map((name, i) => {
         const n = i + 1;
         const cls = n < phase ? 'phase done' : n === phase ? 'phase now' : 'phase';

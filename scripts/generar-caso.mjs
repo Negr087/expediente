@@ -2,6 +2,7 @@
 //
 //   npm run generar-caso                      (Claude elige el escenario)
 //   npm run generar-caso -- "una bodega en Mendoza durante la vendimia"
+//   npm run generar-caso -- --largo "un tren nocturno"   (--corto, --medio o --largo)
 //
 // Necesita ANTHROPIC_API_KEY (en .env o en el entorno). El caso queda con
 // "published": false: se ve en local (npm run dev) pero no en producción.
@@ -11,7 +12,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { validateCase, ROLES } from '../lib/cases/shared.mjs';
+import { validateCase, ROLES, DURATIONS } from '../lib/cases/shared.mjs';
 import { LOOK_OPTIONS } from '../lib/cases/portrait.mjs';
 import { GAME_INTRO, DESIGN_RULES } from '../lib/cases/rules.mjs';
 import { pickRecipe, recipeText, designOf } from '../lib/cases/variety.mjs';
@@ -66,7 +67,7 @@ const CASE_SCHEMA = obj({
   evidence: arr(obj({
     id: str,
     role: { type: 'string', enum: ROLES },
-    phase: { type: 'integer', enum: [1, 2, 3] },
+    phase: { type: 'integer', enum: [1, 2, 3, 4, 5] },
     title: str,
     source: str,
     blocks: arr(block),
@@ -75,14 +76,14 @@ const CASE_SCHEMA = obj({
     id: str, name: str, age: { type: 'integer' }, role: str, statement: str, look,
     questions: arr(obj({ evidence: str, answer: str })),
   })),
-  gate1: gate,
-  gate2: gate,
+  // Una pregunta por cada fase menos la última, en orden.
+  gates: arr(gate),
   accusation: obj({ who: choice, how: choice, why: choice, hints: arr(str) }),
   solution: arr(str),
 });
 
 const SOLVE_SCHEMA = obj({
-  gate1: str, gate2: str, who: str, how: str, why: str,
+  gates: arr(str), who: str, how: str, why: str,
   reasoning: str,
   problems: arr(str),
 });
@@ -111,13 +112,14 @@ function slugify(text) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48);
 }
 
-export function toGame(gen, { id, number, design }) {
+export function toGame(gen, { id, number, design, duration = 20 }) {
   const usedQ = new Set();
   return {
     id,
     number,
     title: gen.title,
     published: false,
+    duration,
     generated: { model: MODEL, at: new Date().toISOString() },
     ...(design ? { design } : {}),
     teaser: gen.teaser,
@@ -144,7 +146,7 @@ export function toGame(gen, { id, number, design }) {
         return { id: qid, evidence: q.evidence, answer: q.answer };
       }),
     })),
-    gates: { 1: gen.gate1, 2: gen.gate2 },
+    gates: Object.fromEntries(gen.gates.map((g, i) => [i + 1, g])),
     accusation: {
       hints: gen.accusation.hints,
       parts: ['who', 'how', 'why'].map((pid) => ({ id: pid, ...gen.accusation[pid] })),
@@ -179,8 +181,7 @@ export function toGen(c) {
       id, name, age, role, statement, look: EXAMPLE_LOOKS[id],
       questions: questions.map(({ evidence, answer }) => ({ evidence, answer })),
     })),
-    gate1: c.gates['1'],
-    gate2: c.gates['2'],
+    gates: Object.keys(c.gates).sort((a, b) => a - b).map((k) => c.gates[k]),
     accusation: { who: parts.who, how: parts.how, why: parts.why, hints: c.accusation.hints },
     solution: c.solution,
   };
@@ -220,11 +221,10 @@ function solvePrompt(c) {
   const opts = (o) => o.options.map((x) => `  - ${x.id}: ${x.label}`).join('\n');
   lines.push(
     '\n# Preguntas',
-    `gate1. ${c.gates[1].question}\n${opts(c.gates[1])}`,
-    `gate2. ${c.gates[2].question}\n${opts(c.gates[2])}`,
+    ...gateList(c).map((g, i) => `Fase ${i + 1} (respuesta ${i + 1} de "gates"). ${g.question}\n${opts(g)}`),
     ...c.accusation.parts.map((p) => `${p.id}. ${p.question}\n${opts(p)}`),
   );
-  return `Sos un jugador experto de juegos de detectives. Resolvé este caso solo con la evidencia. Respondé cada pregunta con el id de la opción.
+  return `Sos un jugador experto de juegos de detectives. Resolvé este caso solo con la evidencia. Respondé cada pregunta con el id de la opción. En "gates" van las respuestas de las preguntas de fase, en orden.
 En "problems" anotá cualquier contradicción, ambigüedad (más de una opción defendible), dato faltante o respuesta que se pueda adivinar sin cruzar evidencia. Si el caso está bien, dejalo vacío.
 
 ${lines.join('\n')}`;
@@ -254,7 +254,7 @@ async function ask(messages, schema, { system, effort = 'high' } = {}) {
   client ??= new Anthropic();
   const stream = client.beta.messages.stream({
     model: MODEL,
-    max_tokens: 64000,
+    max_tokens: 128000, // los casos largos son extensos: va con streaming
     betas: ['server-side-fallback-2026-07-01'],
     fallbacks: 'default',
     output_config: { effort, format: { type: 'json_schema', schema } },
@@ -270,17 +270,21 @@ async function ask(messages, schema, { system, effort = 'high' } = {}) {
   return { data: JSON.parse(textBlock.text), content: msg.content };
 }
 
+function gateList(c) {
+  return Object.keys(c.gates).sort((a, b) => a - b).map((k) => c.gates[k]);
+}
+
 async function check(c) {
   const [full, ...roles] = await Promise.all([
     ask([{ role: 'user', content: solvePrompt(c) }], SOLVE_SCHEMA),
     ...ROLES.map((r) => ask([{ role: 'user', content: roleSolvePrompt(c, r) }], ROLE_SOLVE_SCHEMA, { effort: 'medium' })),
   ]);
   const answer = full.data;
-  const expected = {
-    gate1: c.gates[1].correct, gate2: c.gates[2].correct,
-    ...Object.fromEntries(c.accusation.parts.map((p) => [p.id, p.correct])),
-  };
+  const expected = Object.fromEntries(c.accusation.parts.map((p) => [p.id, p.correct]));
   const problems = [...answer.problems];
+  gateList(c).forEach((g, i) => {
+    if (answer.gates[i] !== g.correct) problems.push(`Un jugador experto respondió "${answer.gates[i]}" en la pregunta de la fase ${i + 1} y la respuesta del caso es "${g.correct}". Razonamiento del jugador: ${answer.reasoning}`);
+  });
   for (const [k, v] of Object.entries(expected)) {
     if (answer[k] !== v) problems.push(`Un jugador experto respondió "${answer[k]}" en ${k} y la respuesta del caso es "${v}". Razonamiento del jugador: ${answer.reasoning}`);
   }
@@ -305,14 +309,16 @@ async function main() {
     console.error('Falta ANTHROPIC_API_KEY. Agregala a .env (la sacás de https://platform.claude.com/settings/keys).');
     process.exit(1);
   }
-  const theme = process.argv.slice(2).join(' ').trim();
+  const args = process.argv.slice(2);
+  const duracion = ['corto', 'medio', 'largo'].find((d) => args.includes(`--${d}`)) ?? 'corto';
+  const theme = args.filter((a) => !a.startsWith('--')).join(' ').trim();
 
   const files = (await readdir(DIR)).filter((f) => f.endsWith('.json'));
   const existing = await Promise.all(files.map(async (f) => JSON.parse(await readFile(path.join(DIR, f), 'utf8'))));
   const example = existing.find((c) => c.id === 'las-toscas');
   const nextNumber = Math.max(0, ...existing.map((c) => c.number ?? 0)) + 1;
 
-  const recipe = pickRecipe([...existing].sort((a, b) => (a.number ?? 0) - (b.number ?? 0)));
+  const recipe = pickRecipe([...existing].sort((a, b) => (a.number ?? 0) - (b.number ?? 0)), Date.now() % 1e9, { duracion });
   const request = [
     theme ? `Escribí un caso nuevo. Escenario y tema: ${theme}.` : 'Escribí un caso nuevo. Elegí vos un escenario original.',
     `Casos que ya existen (no repitas escenario ni trama): ${existing.map((c) => c.title).join('; ')}.`,
@@ -338,7 +344,7 @@ async function main() {
     const base = slugify(gen.title) || `caso-${nextNumber}`;
     let id = base;
     for (let n = 2; existing.some((c) => c.id === id); n++) id = `${base}-${n}`;
-    game = toGame(gen, { id, number: nextNumber, design: designOf(recipe) });
+    game = toGame(gen, { id, number: nextNumber, design: designOf(recipe), duration: DURATIONS[duracion].minutes });
 
     console.log(`  Borrador: "${gen.title}". Revisando…`);
     let problems = validateCase(game);
@@ -369,7 +375,7 @@ async function main() {
   console.log('Para publicarlo, cambiá "published" a true y hacé deploy.');
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main().catch((err) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main().catch((err) => {
   console.error(`\nNo se pudo generar el caso: ${err.message}`);
   if (usage.input) console.error(`Costo hasta el error: US$ ${cost()}`);
   process.exit(1);

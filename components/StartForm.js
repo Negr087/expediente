@@ -48,6 +48,7 @@ export default function StartForm({ cases }) {
               <input type="radio" name="caso" value={c.id} checked={caseId === c.id} onChange={() => setCaseId(c.id)} />
               <span>
                 <strong>N.º {String(c.number).padStart(2, '0')} · {c.title}</strong>
+                {c.duration && <em className="duration">≈ {c.duration} min</em>}
                 {c.draft && <em className="draft">Borrador</em>}
                 {c.teaser && <small>{c.teaser}</small>}
               </span>

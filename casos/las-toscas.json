@@ -3,14 +3,18 @@
   "number": 1,
   "title": "Última partida en Las Toscas",
   "published": true,
+  "duration": 20,
   "teaser": "Domingo, 08:10. Ernesto Valdés aparece muerto frente al tablero de ajedrez de su estudio. A su lado, una taza de té vacía.",
   "design": {
     "crimen": "asesinato",
     "giro": "sin-giro",
     "culpable": "empleado-confianza",
     "motivo": "plata",
-    "pregunta1": "metodo",
-    "pregunta2": "hora-clave",
+    "duracion": "corto",
+    "preguntas": [
+      "metodo",
+      "hora-clave"
+    ],
     "mecanicas": [
       "ropa",
       "ticket",
