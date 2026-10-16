@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+<defs><radialGradient id="fl" cx="50%" cy="45%" r="65%"><stop offset="0" stop-color="#fff8e0" stop-opacity="0.3"/><stop offset="1" stop-color="#000" stop-opacity="0.45"/></radialGradient><radialGradient id="vin" cx="50%" cy="50%" r="50%"><stop offset="0.3" stop-color="#2a2a2a"/><stop offset="1" stop-color="#0e0e0e"/></radialGradient></defs>
+<rect width="480" height="360" fill="#5d4330"/>
+<rect x="40" y="60" width="400" height="250" rx="10" fill="#8a6136"/>
+<rect x="52" y="72" width="376" height="226" rx="6" fill="#2b2622"/>
+<circle cx="200" cy="185" r="100" fill="url(#vin)"/>
+<circle cx="200" cy="185" r="40" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="46" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="52" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="58" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="64" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="70" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="76" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="82" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="88" fill="none" stroke="#333" stroke-width="0.8"/><circle cx="200" cy="185" r="94" fill="none" stroke="#333" stroke-width="0.8"/>
+<circle cx="200" cy="185" r="32" fill="#e8d26a"/>
+<text x="200" y="182" text-anchor="middle" font-family="serif" font-size="8.5" font-weight="bold" fill="#5a2a12">ALMENDRA</text>
+<text x="200" y="196" text-anchor="middle" font-family="serif" font-size="8" fill="#5a2a12">1969</text>
+<circle cx="200" cy="185" r="3" fill="#ccc"/>
+<!-- brazo -->
+<circle cx="360" cy="105" r="16" fill="#9a9a96"/>
+<path d="M360 105 L340 210 L270 238" stroke="#c9c9c4" stroke-width="7" fill="none" stroke-linecap="round"/>
+<rect x="255" y="230" width="22" height="14" rx="3" fill="#3a3a3a" transform="rotate(-20 266 237)"/>
+<!-- perilla de repetición -->
+<circle cx="380" cy="262" r="17" fill="#d8d2c2"/><path d="M380 262 L392 250" stroke="#2a2622" stroke-width="4" stroke-linecap="round"/>
+<text x="352" y="296" font-family="monospace" font-size="9" fill="#e8dcc0">UNA VEZ</text>
+<text x="388" y="240" font-family="monospace" font-size="9" fill="#ffd36a">REPETIR</text>
+<rect x="20" y="320" width="70" height="18" fill="#f4f1e6"/><text x="27" y="333" font-family="monospace" font-size="11" fill="#333">EV. 07</text>
+<rect width="480" height="360" fill="url(#fl)"/>
+</svg>

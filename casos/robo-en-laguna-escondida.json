@@ -1,0 +1,798 @@
+{
+  "id": "robo-en-laguna-escondida",
+  "number": 3,
+  "title": "Robo en el refugio Laguna Escondida",
+  "published": true,
+  "teaser": "Amalia festejó sus 82 en su refugio de montaña. A la mañana, la caja fuerte estaba abierta y el sospechoso de siempre ya tenía antecedentes.",
+  "design": {
+    "crimen": "robo-imposible",
+    "giro": "culpable-obvio-inocente",
+    "culpable": "familiar-cercano",
+    "motivo": "herencia",
+    "pregunta1": "objeto",
+    "pregunta2": "coartada-falsa",
+    "mecanicas": [
+      "musica",
+      "animal",
+      "clima"
+    ],
+    "formatos": [
+      "carta",
+      "plano"
+    ],
+    "tono": "humor",
+    "epoca": "hoy",
+    "lugar": "un refugio de alta montaña"
+  },
+  "phaseNames": [
+    "La caja abierta",
+    "La nevada",
+    "El testamento"
+  ],
+  "victim": {
+    "name": "Amalia Ferrer",
+    "age": 82,
+    "photo": "victima.svg",
+    "look": {
+      "skin": "claro",
+      "hair": "corto",
+      "hairColor": "blanco",
+      "clothes": "cardigan",
+      "clothesColor": "bordo",
+      "facialHair": "ninguno",
+      "expression": "sonrisa",
+      "glasses": true,
+      "earrings": true,
+      "necklace": false
+    }
+  },
+  "briefing": {
+    "title": "Informe inicial",
+    "blocks": [
+      {
+        "type": "image",
+        "src": "victima.svg",
+        "style": "polaroid",
+        "caption": "Amalia Ferrer, 82 años",
+        "alt": "Retrato de Amalia Ferrer: mujer de pelo blanco corto, anteojos y cárdigan bordó."
+      },
+      {
+        "type": "p",
+        "text": "Domingo, 07:00. En el refugio Laguna Escondida, a 1.900 metros en la cordillera cerca de Bariloche, Amalia Ferrer (82), montañista legendaria y dueña del lugar, se despierta muerta de frío: la ventana de su cuarto está abierta y la caja fuerte, vacía. O casi."
+      },
+      {
+        "type": "p",
+        "text": "La noche anterior festejó su cumpleaños con su familia y con Nacho, el encargado del refugio desde hace treinta años. Nevó toda la madrugada y el camino está cortado: nadie entró ni salió."
+      },
+      {
+        "type": "p",
+        "text": "Nadie salió herido, pero Amalia quiere saber quién fue antes de que llegue la patrulla de montaña. «Y rápido, que se enfría el mate», les dijo."
+      },
+      {
+        "type": "note",
+        "text": "Cada uno de ustedes tiene evidencia distinta. Para avanzar van a tener que contarse lo que ven."
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "id": "F1",
+      "role": "forense",
+      "phase": 1,
+      "title": "El cuarto de Amalia",
+      "source": "Relevado el domingo a las 08:00",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "caja.svg",
+          "style": "polaroid",
+          "caption": "Foto 1",
+          "alt": "La caja fuerte abierta: adentro siguen un collar de esmeraldas, un reloj de oro y fajos de billetes. Arriba, un soporte de terciopelo vacío.",
+          "text": "La caja fuerte abierta. Adentro, el collar y la plata siguen ahí. Arriba, el soporte de terciopelo vacío."
+        },
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Caja fuerte",
+              "Abierta con el código: la cerradura no está forzada. En el teclado, restos de ceniza fina"
+            ],
+            [
+              "Adentro",
+              "Un collar de esmeraldas, un reloj de oro y 4.000 dólares en efectivo. Todo intacto"
+            ],
+            [
+              "Soporte de terciopelo",
+              "Vacío. Tiene la forma de un piolet de 68 centímetros"
+            ],
+            [
+              "Estante de arriba",
+              "Una marca rectangular sin polvo, del tamaño de un sobre, y una gota de lacre rojo"
+            ],
+            [
+              "Ventana",
+              "Abierta de par en par. En el cuarto hace 3 grados"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "role": "forense",
+      "phase": 1,
+      "title": "Tasación de lo que había en la caja",
+      "source": "Perito de la aseguradora, por teléfono satelital",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Collar de esmeraldas",
+              "USD 60.000"
+            ],
+            [
+              "Reloj de oro",
+              "USD 15.000"
+            ],
+            [
+              "Piolet de plata del Aconcagua",
+              "USD 8.000. Es famoso: salió en todos los diarios en 1974. Imposible de vender sin que se note"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Un ladrón común se habría llevado el collar. Este dejó lo que más vale y se llevó lo que menos se puede vender."
+        }
+      ]
+    },
+    {
+      "id": "I1",
+      "role": "investigador",
+      "phase": 1,
+      "title": "Plano del refugio",
+      "source": "Cartel de evacuación de la entrada",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "plano.svg",
+          "style": "doc",
+          "caption": "Plano de evacuación",
+          "alt": "Plano del refugio: planta baja con living, cocina, pasillo, depósito, cuarto de Amalia y cuarto de Nacho; planta alta con tres dormitorios y un baño; afuera, la leñera."
+        },
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Planta baja",
+              "Living con salamandra y tocadiscos. Cocina al lado del living, con puerta. Un pasillo de 6 metros lleva al depósito y, al fondo, al cuarto de Amalia"
+            ],
+            [
+              "Junto a la puerta de atrás",
+              "El cuarto de Nacho, con su propio baño"
+            ],
+            [
+              "Planta alta",
+              "Tres dormitorios (Paula, Diego y Martín) y un baño compartido"
+            ],
+            [
+              "Afuera",
+              "La leñera, a 30 metros de la puerta de atrás. La ventana de Amalia da para el otro lado, sobre la ladera"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "El cuarto de Amalia no tiene llave. «En la montaña no se roba», dice ella."
+        }
+      ]
+    },
+    {
+      "id": "I2",
+      "role": "investigador",
+      "phase": 1,
+      "title": "Declaraciones de la mañana",
+      "source": "Tomadas en el living, con mate",
+      "blocks": [
+        {
+          "type": "quote",
+          "who": "Amalia Ferrer",
+          "text": "Me robaron el piolet de plata de mi cumbre del Aconcagua y un sobre con papeles míos. Los guardé anoche, antes de la cena. La caja se abre con el año de mi Aconcagua: lo sabe cualquiera que me haya escuchado contar la historia. O sea, todos, varias veces."
+        },
+        {
+          "type": "quote",
+          "who": "Amalia Ferrer",
+          "text": "En la cena les avisé que el lunes viene el escribano Peralta y que alguno se iba a llevar una sorpresa. Después me tomé mi pastilla, me puse los tapones y a dormir. A mí no me despierta ni una avalancha."
+        },
+        {
+          "type": "quote",
+          "who": "Amalia Ferrer",
+          "text": "Y anoten que Diego vino a la montaña con una campera roja de plumas que parece un matafuegos. No tiene nada que ver, pero me parece importante."
+        },
+        {
+          "type": "note",
+          "text": "Antecedentes: Ignacio «Nacho» Quiroga, condenado en 1991 por el robo de un auto. Cumplió la pena. Trabaja en el refugio desde 1995."
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "role": "forense",
+      "phase": 2,
+      "title": "El tocadiscos del living",
+      "source": "Revisado el domingo a las 10:00",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "tocadiscos.svg",
+          "style": "polaroid",
+          "caption": "Foto 2",
+          "alt": "Un tocadiscos antiguo con un disco puesto y la perilla de repetición girada hacia «REPETIR».",
+          "text": "El tocadiscos del living, con la perilla en «repetir»."
+        },
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Disco en el plato",
+              "Almendra (1969)"
+            ],
+            [
+              "Duración de cada lado",
+              "Unos 19 minutos"
+            ],
+            [
+              "Perilla de repetición",
+              "Activada: cuando termina el lado, el brazo vuelve solo al principio y el disco sigue sonando"
+            ],
+            [
+              "Huellas en el brazo y en la tapa",
+              "Solo de Diego"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Con la repetición activada, el disco puede sonar horas sin nadie en el living."
+        }
+      ]
+    },
+    {
+      "id": "F4",
+      "role": "forense",
+      "phase": 2,
+      "title": "Afuera: la nieve y la ventana",
+      "source": "Relevado el domingo a las 08:30",
+      "blocks": [
+        {
+          "type": "image",
+          "src": "nieve.svg",
+          "style": "polaroid",
+          "caption": "Foto 3",
+          "alt": "Huellas de botas y de un perro en la nieve, entre la puerta de atrás del refugio y la leñera.",
+          "text": "Huellas de botas y de un perro en la nieve, entre la puerta de atrás y la leñera."
+        },
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Puerta de atrás a la leñera (30 m)",
+              "Huellas de botas talle 44 de ida y vuelta. Las de ida, medio tapadas por la nieve; las de vuelta, nítidas. Al lado, huellas de un perro mediano"
+            ],
+            [
+              "Botas de Nacho",
+              "Talle 44, todavía mojadas"
+            ],
+            [
+              "Debajo de la ventana de Amalia",
+              "Nieve lisa. Ninguna huella, ni siquiera tapada"
+            ],
+            [
+              "Alféizar de la ventana, del lado de adentro",
+              "2 centímetros de nieve. En el cerrojo, ceniza fina"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Nadie entró ni salió por esa ventana. Quien la abrió lo hizo desde adentro."
+        }
+      ]
+    },
+    {
+      "id": "I3",
+      "role": "investigador",
+      "phase": 2,
+      "title": "Estación meteorológica y teléfono satelital",
+      "source": "Registros del refugio",
+      "blocks": [
+        {
+          "type": "log",
+          "title": "Estación meteorológica",
+          "rows": [
+            [
+              "01:30",
+              "Empieza a nevar fuerte."
+            ],
+            [
+              "02:30",
+              "Para de nevar."
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Con esa nevada, en un lugar abierto se juntaban unos 2 centímetros cada 25 minutos."
+        },
+        {
+          "type": "log",
+          "title": "Teléfono satelital",
+          "rows": [
+            [
+              "01:52 a 02:31",
+              "Llamada desde la cocina a un número de Córdoba: FM Estelar, línea de oyentes."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I4",
+      "role": "investigador",
+      "phase": 2,
+      "title": "La mañana y la noche",
+      "source": "Novedades y declaraciones",
+      "blocks": [
+        {
+          "type": "log",
+          "rows": [
+            [
+              "07:00",
+              "Amalia se despierta con la ventana y la caja fuerte abiertas."
+            ],
+            [
+              "09:10",
+              "Paula revisa el depósito y encuentra el piolet envuelto en una toalla, adentro de la mochila de Nacho."
+            ]
+          ]
+        },
+        {
+          "type": "quote",
+          "who": "Martín Ferrer",
+          "text": "Desde mi cucheta escuché la música todo el tiempo. Sonó tres veces «Muchacha ojos de papel». ¡Tres! Y a las dos y veinte, silencio. ¿Les cebo otro mate?"
+        },
+        {
+          "type": "quote",
+          "who": "Paula Ferrer",
+          "text": "Desde la cocina se escuchaba el disco. Siempre las mismas canciones… o parecidas, no sé, yo estaba al teléfono. Con mi marido. Bueno, al teléfono."
+        }
+      ]
+    },
+    {
+      "id": "F5",
+      "role": "forense",
+      "phase": 3,
+      "title": "Lo que quedó en la salamandra",
+      "source": "Revisada el domingo a las 11:00",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Papel quemado",
+              "Papel de carta color crema con el membrete «A.F.». En dos pedacitos se lee: «…go el refugio a Ignacio Qui…» y «…de puño y let…»"
+            ],
+            [
+              "Lacre",
+              "Un pedazo de lacre rojo con media letra A"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Es el mismo papel de carta que usa Amalia."
+        }
+      ]
+    },
+    {
+      "id": "F6",
+      "role": "forense",
+      "phase": 3,
+      "title": "La campera roja del perchero",
+      "source": "Encontrada en el living",
+      "blocks": [
+        {
+          "type": "kv",
+          "rows": [
+            [
+              "Prenda",
+              "Campera de plumas roja, talle L"
+            ],
+            [
+              "Bolsillo derecho",
+              "Un papelito con «1974» escrito en birome"
+            ],
+            [
+              "Puños",
+              "Ceniza fina de salamandra y dos gotitas de lacre rojo"
+            ]
+          ]
+        },
+        {
+          "type": "note",
+          "text": "La ceniza de los puños es la misma que la del teclado de la caja y la del cerrojo de la ventana."
+        }
+      ]
+    },
+    {
+      "id": "I5",
+      "role": "investigador",
+      "phase": 3,
+      "title": "Carta en la mesa de luz de Amalia",
+      "source": "Sin enviar, en un sobre sin cerrar",
+      "blocks": [
+        {
+          "type": "letter",
+          "text": "Querido Peralta:\nAnoche, antes de la cena, escribí de puño y letra mi testamento nuevo y lo guardé en la caja, lacrado.\nEl refugio queda para Nacho, que lo cuidó treinta años mejor que nadie, con una condición: que siga siendo refugio.\nA Paula y a Diego les dejo los departamentos de Bariloche, que valen más y dan menos trabajo.\nDiego me va a querer matar. Que se aguante.\nTe espero el lunes con medialunas.",
+          "signature": "Amalia"
+        }
+      ]
+    },
+    {
+      "id": "I6",
+      "role": "investigador",
+      "phase": 3,
+      "title": "El celular de Diego",
+      "source": "Mails y mensajes de las últimas semanas",
+      "blocks": [
+        {
+          "type": "log",
+          "title": "Mails",
+          "rows": [
+            [
+              "12/9",
+              "Grupo Cumbre Resorts: «Confirmamos la reserva de compra del refugio Laguna Escondida. Adelanto recibido: USD 30.000.»"
+            ],
+            [
+              "3/10",
+              "Grupo Cumbre Resorts: «Le recordamos que si el refugio no se transfiere antes del 1/3, corresponde devolver el doble del adelanto.»"
+            ]
+          ]
+        },
+        {
+          "type": "chat",
+          "title": "Diego ↔ Dr. Lanza (abogado)",
+          "messages": [
+            {
+              "who": "Diego",
+              "time": "20:14",
+              "text": "Mamá anunció cambios en el testamento. Si me saca el refugio, estoy frito"
+            },
+            {
+              "who": "Dr. Lanza",
+              "time": "20:31",
+              "text": "Mientras el testamento nuevo no llegue al escribano, vale el anterior"
+            },
+            {
+              "who": "Diego",
+              "time": "20:32",
+              "text": "Ok. Gracias. Por nada en especial"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "suspects": [
+    {
+      "id": "paula",
+      "name": "Paula Ferrer",
+      "age": 50,
+      "role": "Hija de Amalia",
+      "photo": "paula.svg",
+      "look": {
+        "skin": "claro",
+        "hair": "melena",
+        "hairColor": "rubio",
+        "clothes": "cardigan",
+        "clothesColor": "celeste",
+        "facialHair": "ninguno",
+        "expression": "seria",
+        "glasses": false,
+        "earrings": true,
+        "necklace": false
+      },
+      "statement": "Yo estuve en la cocina, hablando por teléfono con mi marido… o sea, por teléfono. Desde la una. O desde las dos. ¡No sé, estoy muy nerviosa! Nacho tiene antecedentes, lo sabe todo el mundo.",
+      "questions": [
+        {
+          "id": "paula-I2",
+          "evidence": "I2",
+          "answer": "¡Ahí está, antecedentes! ¿Qué más quieren? Bueno, era un auto. Y hace treinta años. Pero igual."
+        },
+        {
+          "id": "paula-I3",
+          "evidence": "I3",
+          "answer": "¡Bueno, sí! Llamé a FM Estelar, al programa del horóscopo. Cuarenta minutos en el satelital, que cuesta una fortuna. No le digan a mi marido. Y no salí de la cocina, eso sí lo juro."
+        },
+        {
+          "id": "paula-I4",
+          "evidence": "I4",
+          "answer": "¡Yo lo encontré! En la mochila de Nacho, envuelto en una toalla. ¿Vieron que tenía razón? …Aunque la toalla era del baño de arriba, ahora que lo pienso."
+        },
+        {
+          "id": "paula-I5",
+          "evidence": "I5",
+          "answer": "¿Los departamentos para nosotros y el refugio para Nacho? Mamá siempre fue más viva que todos. A mí me viene bárbaro, odio subir esta cuesta."
+        }
+      ]
+    },
+    {
+      "id": "nacho",
+      "name": "Nacho Quiroga",
+      "age": 58,
+      "role": "Encargado del refugio",
+      "photo": "nacho.svg",
+      "look": {
+        "skin": "trigueño",
+        "hair": "corto",
+        "hairColor": "canoso",
+        "clothes": "camisa",
+        "clothesColor": "marron",
+        "facialHair": "barba",
+        "expression": "seria",
+        "glasses": false,
+        "earrings": false,
+        "necklace": false
+      },
+      "statement": "Salí a buscar leña. A las dos. Volví. Dormí. No toqué nada.",
+      "questions": [
+        {
+          "id": "nacho-I2",
+          "evidence": "I2",
+          "answer": "Fue hace treinta años. Pagué."
+        },
+        {
+          "id": "nacho-F4",
+          "evidence": "F4",
+          "answer": "Sí. El perro. Turrón. Está en el depósito, Amalia no quiere perros. Lo saqué conmigo. De dos a tres menos veinte."
+        },
+        {
+          "id": "nacho-I4",
+          "evidence": "I4",
+          "answer": "No es mío eso. La toalla tampoco. Yo tengo baño abajo."
+        },
+        {
+          "id": "nacho-I5",
+          "evidence": "I5",
+          "answer": "…No sabía. (Se le llenan los ojos de lágrimas y sale a cortar leña.)"
+        }
+      ]
+    },
+    {
+      "id": "martin",
+      "name": "Martín Ferrer",
+      "age": 24,
+      "role": "Nieto de Amalia, hijo de Paula",
+      "photo": "martin.svg",
+      "look": {
+        "skin": "medio",
+        "hair": "corto",
+        "hairColor": "castaño",
+        "clothes": "remera",
+        "clothesColor": "mostaza",
+        "facialHair": "ninguno",
+        "expression": "sonrisa",
+        "glasses": true,
+        "earrings": false,
+        "necklace": false
+      },
+      "statement": "¡Hola! Cualquier cosa que necesiten, pregúntenme a mí. Estuve en mi cucheta leyendo toda la noche, con la música de fondo. ¿Les preparo unos mates? ¿Unas tostadas? ¿Les cargo el celular?",
+      "questions": [
+        {
+          "id": "martin-F4",
+          "evidence": "F4",
+          "answer": "¡Turrón! Es el perro de Nacho, lo tiene escondido en el depósito porque la abuela no quiere perros. Yo le llevo galletitas. Le ladra a todo el mundo menos a nosotros dos. Anoche no ladró ni una vez, ¡qué raro!"
+        },
+        {
+          "id": "martin-F3",
+          "evidence": "F3",
+          "answer": "¡El tocadiscos del abuelo! Tiene un botoncito de repetir que nadie usa nunca. Bueno, parece que alguien sí."
+        },
+        {
+          "id": "martin-I6",
+          "evidence": "I6",
+          "answer": "¿El tío Diego vendió el refugio? Pero si dice que odia la montaña… Bueno, eso explica que lo venda. ¿Quieren otro mate?"
+        }
+      ]
+    },
+    {
+      "id": "diego",
+      "name": "Diego Ferrer",
+      "age": 46,
+      "role": "Hijo de Amalia",
+      "photo": "diego.svg",
+      "look": {
+        "skin": "claro",
+        "hair": "corto",
+        "hairColor": "negro",
+        "clothes": "remera",
+        "clothesColor": "negro",
+        "facialHair": "barba_de_dias",
+        "expression": "sonrisa",
+        "glasses": false,
+        "earrings": false,
+        "necklace": false
+      },
+      "statement": "Me quedé en el living escuchando el disco de Almendra entero, los dos lados, con la salamandra prendida. A las dos y veinte me fui a dormir. Una noche de rock y fuego, re peligrosa.",
+      "questions": [
+        {
+          "id": "diego-F3",
+          "evidence": "F3",
+          "answer": "¿La perilla de repetir? Me habrá gustado mucho el lado A. Hay gente que repite el postre; yo repito discos."
+        },
+        {
+          "id": "diego-I4",
+          "evidence": "I4",
+          "answer": "¿Tres veces la misma canción? Bueno, me quedé dormido en el sillón. ¿Ahora dormir es delito?"
+        },
+        {
+          "id": "diego-F4",
+          "evidence": "F4",
+          "answer": "¿Un perro? Ah, el que me ladró el viernes desde el depósito. Pensé que era Paula roncando."
+        },
+        {
+          "id": "diego-F6",
+          "evidence": "F6",
+          "answer": "¿1974? Es el número de mi casillero del gimnasio. (Desde la cocina, Amalia grita: «¡Es el año de mi Aconcagua, desagradecido!»)"
+        },
+        {
+          "id": "diego-I6",
+          "evidence": "I6",
+          "answer": "Un adelanto no es una venta. Es una expresión de interés muy concreta. (Se queda callado y pide hablar con su abogado.)"
+        }
+      ]
+    }
+  ],
+  "gates": {
+    "1": {
+      "question": "¿Qué vino a buscar el ladrón?",
+      "options": [
+        {
+          "id": "piolet",
+          "label": "El piolet de plata del Aconcagua"
+        },
+        {
+          "id": "testamento",
+          "label": "El testamento nuevo de Amalia"
+        },
+        {
+          "id": "escritura",
+          "label": "La escritura del refugio"
+        },
+        {
+          "id": "cartas",
+          "label": "Las cartas de amor de su marido"
+        }
+      ],
+      "correct": "testamento",
+      "hints": [
+        "Si el ladrón quería plata, ¿por qué dejó lo que dejó?",
+        "Crucen lo que quedó en la caja con lo que Amalia contó en la cena.",
+        "El testamento nuevo de Amalia: el piolet fue para despistar."
+      ]
+    },
+    "2": {
+      "question": "¿Qué coartada no se sostiene?",
+      "options": [
+        {
+          "id": "paula",
+          "label": "La de Paula: estuvo al teléfono en la cocina"
+        },
+        {
+          "id": "nacho",
+          "label": "La de Nacho: salió a buscar leña"
+        },
+        {
+          "id": "martin",
+          "label": "La de Martín: estuvo leyendo en su cucheta"
+        },
+        {
+          "id": "diego",
+          "label": "La de Diego: escuchó el disco entero en el living"
+        }
+      ],
+      "correct": "diego",
+      "hints": [
+        "Una de las coartadas depende de un disco.",
+        "Comparen la perilla del tocadiscos con lo que escucharon los demás.",
+        "La de Diego: nadie escucha tres veces seguidas el lado A si dice que dio vuelta el disco."
+      ]
+    }
+  },
+  "accusation": {
+    "hints": [
+      "¿Quién perdía más si el refugio no era suyo?",
+      "Crucen la carta de Amalia, el celular de Diego y lo que quedó en la salamandra.",
+      "Diego dejó el disco repitiendo, abrió la caja con el código anotado, escondió el piolet en la mochila de Nacho y quemó el testamento."
+    ],
+    "parts": [
+      {
+        "id": "who",
+        "question": "¿Quién robó la caja fuerte?",
+        "options": [
+          {
+            "id": "paula",
+            "label": "Paula Ferrer"
+          },
+          {
+            "id": "nacho",
+            "label": "Nacho Quiroga"
+          },
+          {
+            "id": "martin",
+            "label": "Martín Ferrer"
+          },
+          {
+            "id": "diego",
+            "label": "Diego Ferrer"
+          }
+        ],
+        "correct": "diego"
+      },
+      {
+        "id": "how",
+        "question": "¿Cómo lo hizo?",
+        "options": [
+          {
+            "id": "disco",
+            "label": "Dejó el disco repitiendo como coartada, abrió la caja con el código anotado y quemó el testamento en la salamandra"
+          },
+          {
+            "id": "ventana",
+            "label": "Entró por la ventana desde afuera mientras nevaba"
+          },
+          {
+            "id": "pastilla",
+            "label": "Le cambió la pastilla a Amalia por una más fuerte"
+          },
+          {
+            "id": "perro",
+            "label": "Le dio galletitas al perro para que no ladrara"
+          }
+        ],
+        "correct": "disco"
+      },
+      {
+        "id": "why",
+        "question": "¿Por qué lo hizo?",
+        "options": [
+          {
+            "id": "piolet",
+            "label": "Quería vender el piolet de plata"
+          },
+          {
+            "id": "venta",
+            "label": "Ya había vendido el refugio a un hotel y el testamento nuevo se lo dejaba a Nacho"
+          },
+          {
+            "id": "celos",
+            "label": "Tenía celos de lo mucho que su madre quiere a Nacho"
+          },
+          {
+            "id": "echar",
+            "label": "Quería que echaran a Nacho del refugio"
+          }
+        ],
+        "correct": "venta"
+      }
+    ]
+  },
+  "solution": [
+    "El ladrón es Diego Ferrer. En septiembre había firmado una reserva de venta del refugio con Grupo Cumbre Resorts y ya había cobrado un adelanto de 30.000 dólares. Si el refugio no era suyo antes de marzo, tenía que devolver el doble.",
+    "En la cena, Amalia anunció que el lunes venía el escribano y que alguno se iba a llevar una sorpresa. Diego entendió todo y le escribió a su abogado, que le confirmó lo que necesitaba saber: mientras el testamento nuevo no llegara al escribano, valía el anterior.",
+    "A la una y media prendió la salamandra y a las 01:40 puso el disco de Almendra con la perilla de repetir: el lado A sonó una y otra vez, y Martín y Paula creyeron que él seguía en el living. Cerca de las dos vio por la ventana que Nacho salía con el perro hacia la leñera, y supo que nadie iba a ladrar en el depósito.",
+    "Fue hasta el cuarto de Amalia, que dormía con su pastilla y sus tapones, y abrió la caja con el código que tenía anotado en un papelito porque nunca se acuerda del año del Aconcagua. Se llevó el sobre lacrado y, para que pareciera un robo común, el piolet. Abrió la ventana para simular que el ladrón había entrado desde afuera: por eso juntó solo 2 centímetros de nieve, los últimos 25 minutos de la nevada. Escondió el piolet en la mochila de Nacho, envuelto en una toalla del baño de arriba.",
+    "Volvió al living, quemó el testamento en la salamandra (de ahí la ceniza y el lacre en los puños de su campera roja), apagó el disco a las 02:20 y se fue a dormir. Nacho, el sospechoso de siempre, era el que más perdía con ese robo: el testamento quemado le dejaba el refugio a él."
+  ]
+}
