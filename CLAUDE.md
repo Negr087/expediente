@@ -12,7 +12,7 @@ La gente llena el formulario en `/arma-tu-caso`. El pedido queda en Supabase (ta
 4. Si el pedido es ofensivo, apunta a lastimar a alguien o no se puede convertir en un caso apto para todo público: `npm run pedidos -- rechazar <ID> "motivo corto y amable"` y listo.
 5. Sorteá la receta con `npm run receta` y seguila. Lo que fije el pedido (culpable, tono, lugar, época) tiene prioridad sobre la receta. Guardá en el caso el bloque `design` que imprime.
 6. Escribí el caso en un archivo **fuera del repo** (por ejemplo `/tmp/caso-<ID>.json`):
-   - Formato: el mismo de `casos/noche-de-cosecha.json`. Usalo solo como referencia de formato: la trama, el culpable y el tipo de pistas salen de la receta. No hace falta `id`, `number` ni `published`: los pone la entrega.
+   - Formato: el mismo de `casos/robo-en-laguna-escondida.json`. Usalo solo como referencia de formato: la trama, el culpable y el tipo de pistas salen de la receta. No hace falta `id`, `number` ni `published`: los pone la entrega.
    - Reglas: `GAME_INTRO`, `DESIGN_RULES` y `REQUEST_RULES` de `lib/cases/rules.mjs`. Cumplilas todas.
    - Personas: cada una con `look` (rasgos, opciones en `LOOK_OPTIONS` de `lib/cases/portrait.mjs`). Si en el pedido tiene foto, poné `"photo": "<archivo de la foto>"` (por ejemplo `sospechoso-2.jpg`); si no, `"photo": "<id>.svg"` y la API dibuja el retrato. La víctima va en `victim` y su imagen como primer bloque del `briefing`, igual que en el ejemplo.
    - Para que el `look` coincida con una foto, la podés bajar y mirar: `npm run pedidos -- foto <ID> <archivo> /tmp/<archivo>`.
