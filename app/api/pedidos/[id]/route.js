@@ -16,6 +16,7 @@ export async function GET(request, { params }) {
       createdAt: p.created_at,
       tema: p.data.tema,
       duracion: DURATIONS[p.data.duracion ?? 'corto'].label,
+      aviso: p.data.aviso?.tipo ?? 'ninguno',
       personajes: [p.data.victima.nombre, ...p.data.sospechosos.map((s) => s.nombre)],
       note: p.status === 'rechazado' ? p.note : null,
       case: p.status === 'listo' && p.case_data

@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import { NextResponse, after } from 'next/server';
 import { insertPedido, putPhoto } from '@/lib/pedidos/store.mjs';
-import { parsePedido, FormError } from '@/lib/pedidos/form.mjs';
+import { parsePedido, parseAviso, FormError } from '@/lib/pedidos/form.mjs';
 import { avisarPedido } from '@/lib/nostr/avisos.mjs';
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -40,6 +40,9 @@ export async function POST(request) {
     let raw;
     try { raw = JSON.parse(form.get('datos') ?? '{}'); } catch { raw = {}; }
     const { data, photoMap } = parsePedido(raw, new Set(files.keys()));
+    data.aviso = await parseAviso(raw.aviso);
+    // Para armar el link del aviso cuando el caso esté listo.
+    data.origen = new URL(request.url).origin;
     const cleaned = await Promise.all(photoMap.map(async ([slot, name]) => [name, await cleanPhoto(files.get(slot))]));
 
     for (let attempt = 0; attempt < 5; attempt++) {
@@ -47,8 +50,7 @@ export async function POST(request) {
       if (await insertPedido({ id, data })) {
         await Promise.all(cleaned.map(([name, buf]) => putPhoto(id, name, buf)));
         // El aviso sale después de responder: la persona no espera a los relays.
-        const origin = new URL(request.url).origin;
-        after(() => avisarPedido(id, data, origin));
+        after(() => avisarPedido(id, data, data.origen));
         return NextResponse.json({ id });
       }
     }

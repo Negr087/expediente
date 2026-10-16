@@ -77,6 +77,7 @@ export default function CaseRequestForm() {
   const [sospechosos, setSospechosos] = useState(() => [emptyPerson(), emptyPerson(), emptyPerson(), emptyPerson()]);
   const [culpable, setCulpable] = useState('sorpresa');
   const [extras, setExtras] = useState('');
+  const [aviso, setAviso] = useState({ tipo: 'ninguno', valor: '' });
   const [fotos, setFotos] = useState({});
   const [permiso, setPermiso] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -101,7 +102,7 @@ export default function CaseRequestForm() {
     setBusy(true);
     try {
       const body = new FormData();
-      body.set('datos', JSON.stringify({ contacto, tema, tono, duracion, victima, sospechosos, culpable, extras, permisoFotos: permiso }));
+      body.set('datos', JSON.stringify({ contacto, tema, tono, duracion, victima, sospechosos, culpable, extras, aviso, permisoFotos: permiso }));
       body.set('web', e.target.elements.web.value);
       for (const [slot, f] of Object.entries(fotos)) if (f) body.set(`foto-${slot}`, f, `${slot}.jpg`);
       const res = await fetch('/api/pedidos', { method: 'POST', body });
@@ -224,6 +225,53 @@ export default function CaseRequestForm() {
           <span>Tu nombre o apodo (opcional)</span>
           <input maxLength={60} value={contacto} onChange={(e) => setContacto(e.target.value)} />
         </label>
+      </fieldset>
+
+      <fieldset className="form-block">
+        <legend>¿Cómo te avisamos?</legend>
+        <p className="form-help">Cuando el caso esté listo te mandamos el link para jugarlo.</p>
+        {[
+          ['nostr', 'Por Nostr'],
+          ['email', 'Por email'],
+          ['ninguno', 'No hace falta, me guardo el link'],
+        ].map(([id, label]) => (
+          <label key={id} className="duration-option">
+            <input type="radio" name="aviso" value={id} checked={aviso.tipo === id} onChange={() => setAviso({ tipo: id, valor: '' })} />
+            <span>{label}</span>
+          </label>
+        ))}
+        {aviso.tipo === 'nostr' && (
+          <label className="field" style={{ marginTop: 10 }}>
+            <span>Tu npub o tu usuario de Nostr</span>
+            <input
+              required
+              maxLength={200}
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              value={aviso.valor}
+              onChange={(e) => setAviso({ tipo: 'nostr', valor: e.target.value })}
+              placeholder="npub1… o nombre@dominio.com"
+            />
+          </label>
+        )}
+        {aviso.tipo === 'email' && (
+          <label className="field" style={{ marginTop: 10 }}>
+            <span>Tu email</span>
+            <input
+              required
+              type="email"
+              maxLength={120}
+              autoCapitalize="off"
+              value={aviso.valor}
+              onChange={(e) => setAviso({ tipo: 'email', valor: e.target.value })}
+              placeholder="vos@ejemplo.com"
+            />
+          </label>
+        )}
+        {aviso.tipo !== 'ninguno' && (
+          <p className="form-help">Lo usamos solo para avisarte de este caso. No se muestra en ningún lado.</p>
+        )}
       </fieldset>
 
       {hasPhotos && (

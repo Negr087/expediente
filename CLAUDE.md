@@ -19,6 +19,7 @@ La gente llena el formulario en `/arma-tu-caso`. El pedido queda en Supabase (ta
    - Solo usá imágenes en los bloques si existen; en un caso a pedido, lo normal es no poner imágenes en la evidencia.
 7. Revisalo como jugador antes de entregar: una sola línea de tiempo coherente, cada pregunta necesita evidencia de los dos roles, cada inocente se descarta con evidencia concreta.
 8. `npm run pedidos -- entregar <ID> /tmp/caso-<ID>.json` valida y entrega. Si marca problemas, corregí y volvé a entregar.
+9. Al entregar o rechazar, si la persona dejó su Nostr se le manda el aviso solo. Si dejó un email, el script imprime el mensaje para que el dueño del juego se lo mande: pasáselo tal cual. Para reintentar un aviso de Nostr: `npm run pedidos -- avisar <ID>`.
 
 Nunca agregues al repo los casos a pedido ni las fotos: son privados.
 

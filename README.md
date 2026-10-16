@@ -87,6 +87,7 @@ Las que vienen ahora son ilustraciones SVG. Para cambiarlas por fotos reales (o 
 
 En `/arma-tu-caso` cualquiera pide un caso a medida: cuánto dura (20, 40 o 60 minutos), dónde pasa, la víctima, de 3 a 4 sospechosos con su relación, fotos opcionales, quién es el culpable (o sorpresa) y detalles extra. Recibe un link `/pedido/<ID>` donde ve el estado (recibido, en preparación, listo) y, cuando está listo, lo juega desde ahí.
 
+- **Aviso:** la persona elige cómo enterarse de que su caso está listo: por Nostr (npub o usuario `nombre@dominio`), por email o guardándose el link. Por Nostr, el aviso sale solo al entregar o rechazar el pedido, desde la identidad del juego; por email, el script te imprime el mensaje para mandarlo. El contacto queda solo en el pedido: no se muestra en la página pública.
 - **Privado:** el caso no aparece en el inicio. Solo se juega con el link del pedido.
 - **Fotos:** se achican en el celular, el servidor las recorta y les borra los metadatos (por ejemplo la ubicación GPS) y quedan en un bucket privado de Supabase. Solo se ven dentro de ese caso. Para subirlas hay que confirmar que se tiene permiso de esas personas. Sin foto, se usa el retrato dibujado.
 - **Quién lo arma:** por ahora, Claude Code siguiendo `CLAUDE.md` (desde la notebook, desde claude.ai/code o con una tarea programada en la nube). Más adelante, con saldo en la API, se puede llamar al generador automáticamente al recibir el pedido.
@@ -97,6 +98,7 @@ npm run pedidos -- ver <ID>
 npm run pedidos -- tomar <ID>
 npm run pedidos -- entregar <ID> caso.json
 npm run pedidos -- rechazar <ID> "motivo"
+npm run pedidos -- avisar <ID>           # reintenta el aviso por Nostr
 ```
 
 Sin variables de Supabase, los pedidos y las fotos se guardan en `.datos-locales/` (ignorada por git), para probar en local.

@@ -8,6 +8,7 @@
 //   npm run pedidos -- entregar <ID> <caso.json> valida el caso y lo publica para ese pedido
 //   npm run pedidos -- rechazar <ID> "motivo"    lo rechaza con un motivo para la persona
 //   npm run pedidos -- aviso                     manda un mensaje de prueba por Nostr
+//   npm run pedidos -- avisar <ID>               vuelve a avisarle a la persona (entregado o rechazado)
 //
 // Usa Supabase si hay SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY (en .env o en el
 // entorno); si no, la carpeta local .datos-locales/.
@@ -17,7 +18,7 @@ import {
   listPedidos, getPedido, updatePedido, getPhoto, usingSupabase,
 } from '../lib/pedidos/store.mjs';
 import { validateCase, DURATIONS } from '../lib/cases/shared.mjs';
-import { sendDm, nostrConfig } from '../lib/nostr/avisos.mjs';
+import { sendDm, sendDmToUser, nostrConfig } from '../lib/nostr/avisos.mjs';
 
 function fail(msg) {
   console.error(msg);
@@ -29,6 +30,25 @@ async function mustGet(id) {
   const p = await getPedido(id.toUpperCase());
   if (!p) fail(`No existe el pedido ${id}.`);
   return p;
+}
+
+// Le avisa a quien hizo el pedido que su caso está listo (o que se rechazó).
+async function notifyUser(p) {
+  const a = p.data.aviso;
+  const link = `${p.data.origen ?? process.env.SITE_URL ?? ''}/pedido/${p.id}`;
+  const text = p.status === 'rechazado'
+    ? `Hola${p.data.contacto ? `, ${p.data.contacto}` : ''}. No pudimos armar tu caso de Expediente (pedido ${p.id}): ${p.note}`
+    : `¡Hola${p.data.contacto ? `, ${p.data.contacto}` : ''}! Tu caso de Expediente está listo: «${p.case_data?.title}».\nJuéguenlo desde acá: ${link}`;
+  if (!a || a.tipo === 'ninguno') return console.log('La persona no pidió aviso: tiene el link del pedido.');
+  if (a.tipo === 'email') return console.log(`Avisale por email a ${a.valor}:\n\n${text}\n`);
+  try {
+    const { ok, failed, mode } = await sendDmToUser(a.pubkey, text);
+    if (ok.length) console.log(`Aviso por Nostr a ${a.valor} (${mode}) en: ${ok.join(', ')}.`);
+    else console.log(`No se pudo mandar el aviso por Nostr a ${a.valor}. Probá más tarde con: npm run pedidos -- avisar ${p.id}`);
+    if (failed.length) console.log(`No respondieron: ${failed.join(', ')}`);
+  } catch (err) {
+    console.log(`No se pudo mandar el aviso por Nostr: ${err.message}`);
+  }
 }
 
 function photosOf(p) {
@@ -94,17 +114,25 @@ const commands = {
     }
     if (problems.length) fail(`El caso tiene problemas, corregilos y volvé a entregar:\n${problems.map((x) => `- ${x}`).join('\n')}`);
 
-    await updatePedido(p.id, { status: 'listo', case_id: caseId, case_data: c, note: null });
+    const updated = await updatePedido(p.id, { status: 'listo', case_id: caseId, case_data: c, note: null });
     console.log(`Pedido ${p.id} entregado: "${c.title}". Se juega desde /pedido/${p.id}`);
+    await notifyUser(updated);
   },
 
   async rechazar(id, ...motivo) {
     const p = await mustGet(id);
     const note = motivo.join(' ').trim();
     if (!note) fail('Escribí un motivo corto para la persona: npm run pedidos -- rechazar <ID> "motivo"');
-    await updatePedido(p.id, { status: 'rechazado', note });
+    const updated = await updatePedido(p.id, { status: 'rechazado', note });
     console.log(`Pedido ${p.id} rechazado.`);
+    await notifyUser(updated);
   },
+};
+
+commands.avisar = async (id) => {
+  const p = await mustGet(id);
+  if (!['listo', 'rechazado'].includes(p.status)) fail(`El pedido ${p.id} todavía no está entregado ni rechazado.`);
+  await notifyUser(p);
 };
 
 commands.aviso = async () => {

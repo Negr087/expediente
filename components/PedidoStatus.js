@@ -108,6 +108,7 @@ export default function PedidoStatus({ id }) {
         </div>
       ) : pedido.status !== 'rechazado' && (
         <p className="screen-lead">
+          {pedido.aviso === 'nostr' ? 'Te vamos a avisar por Nostr cuando esté listo. ' : pedido.aviso === 'email' ? 'Te vamos a avisar por email cuando esté listo. ' : ''}
           Guardá este link: cuando el caso esté listo, lo juegan desde acá. Esta página se actualiza sola.
         </p>
       )}
