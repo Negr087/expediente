@@ -108,8 +108,11 @@ const commands = {
 commands.aviso = async () => {
   const cfg = nostrConfig();
   if (!cfg) fail('Faltan NOSTR_NSEC y NOSTR_AVISOS_NPUB en .env (creá la clave con: npm run nostr-clave).');
-  const n = await sendDm('Prueba de aviso de Expediente: si leés esto, los avisos de pedidos funcionan.', cfg);
-  console.log(n ? `Mensaje publicado en ${n} relay(s) (${cfg.mode}). Fijate en tu cliente de Nostr.` : 'Ningún relay aceptó el mensaje.');
+  const { ok, failed } = await sendDm('Prueba de aviso de Expediente: si leés esto, los avisos de pedidos funcionan.', cfg);
+  if (ok.length) console.log(`Mensaje publicado (${cfg.mode}) en: ${ok.join(', ')}. Fijate en tu cliente de Nostr.`);
+  else console.log('Ningún relay aceptó el mensaje.');
+  if (failed.length) console.log(`No respondieron: ${failed.join(', ')}`);
+  process.exit(ok.length ? 0 : 1);
 };
 
 const [cmd = 'listar', ...args] = process.argv.slice(2);
