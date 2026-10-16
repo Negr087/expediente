@@ -990,3 +990,27 @@ div.role-option { cursor: default; }
 .pedido-summary { margin: 20px 0; font-size: 15px; }
 .pedido-summary p { margin: 0 0 8px; }
 .pedido-summary span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--kraft); }
+
+/* Documentos: chat y carta */
+.chat { background: #d9d2bf; border-radius: 3px; padding: 10px; margin: 0 0 14px; font-family: var(--ui); font-size: 15px; }
+.chat-title { font-weight: 600; font-size: 13px; color: var(--tinta-2); margin: 0 0 8px !important; text-align: center; }
+.chat-msg { margin: 8px 0 0; max-width: 88%; }
+.chat-msg.same { margin-top: 3px; }
+.chat-who { display: block; font-size: 12px; font-weight: 700; color: var(--investigador-ink); margin: 0 0 2px 4px; }
+.chat-msg p { background: #fbf9f3; border-radius: 0 8px 8px 8px; padding: 6px 10px 4px; margin: 0 !important; line-height: 1.4; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08); }
+.chat-msg.same p { border-radius: 8px; }
+.chat-msg time { display: block; text-align: right; font-size: 11px; color: var(--tinta-2); margin-top: 2px; }
+.letter {
+  background: #f6efd9 repeating-linear-gradient(transparent 0 27px, #d8cfb5 27px 28px) 0 8px;
+  border: 1px solid #ddd2b4;
+  padding: 14px 18px 10px;
+  margin: 0 0 14px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 28px;
+  transform: rotate(-0.5deg);
+  box-shadow: 0 6px 14px -10px rgba(0, 0, 0, 0.5);
+}
+.letter p { margin: 0 !important; }
+.letter .letter-sign { text-align: right; margin-top: 6px !important; }

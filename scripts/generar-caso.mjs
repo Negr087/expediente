@@ -14,6 +14,7 @@ import { pathToFileURL } from 'node:url';
 import { validateCase, ROLES } from '../lib/cases/shared.mjs';
 import { LOOK_OPTIONS } from '../lib/cases/portrait.mjs';
 import { GAME_INTRO, DESIGN_RULES } from '../lib/cases/rules.mjs';
+import { pickRecipe, recipeText, designOf } from '../lib/cases/variety.mjs';
 
 const MODEL = 'claude-opus-5-5';
 const PRICE = { input: 4, output: 20 }; // US$ por millón de tokens
@@ -36,6 +37,8 @@ const block = {
     obj({ type: { type: 'string', const: 'quote' }, who: str, text: str }),
     obj({ type: { type: 'string', const: 'kv' }, rows: arr(obj({ label: str, value: str })) }),
     obj({ type: { type: 'string', const: 'log' }, title: str, rows: arr(obj({ time: str, text: str })) }),
+    obj({ type: { type: 'string', const: 'chat' }, title: str, messages: arr(obj({ who: str, time: str, text: str })) }),
+    obj({ type: { type: 'string', const: 'letter' }, text: str, signature: str }),
   ],
 };
 const look = obj({
@@ -90,12 +93,16 @@ const ROLE_SOLVE_SCHEMA = obj({ who: str, confident: { type: 'boolean' } });
 function blockToGame(b) {
   if (b.type === 'kv') return { type: 'kv', rows: b.rows.map((r) => [r.label, r.value]) };
   if (b.type === 'log') return { type: 'log', ...(b.title ? { title: b.title } : {}), rows: b.rows.map((r) => [r.time, r.text]) };
+  if (b.type === 'chat') return { type: 'chat', ...(b.title ? { title: b.title } : {}), messages: b.messages };
+  if (b.type === 'letter') return { type: 'letter', text: b.text, ...(b.signature ? { signature: b.signature } : {}) };
   return b;
 }
 
 function blockToGen(b) {
   if (b.type === 'kv') return { type: 'kv', rows: b.rows.map(([label, value]) => ({ label, value })) };
   if (b.type === 'log') return { type: 'log', title: b.title ?? '', rows: b.rows.map(([time, text]) => ({ time, text })) };
+  if (b.type === 'chat') return { type: 'chat', title: b.title ?? '', messages: b.messages };
+  if (b.type === 'letter') return { type: 'letter', text: b.text, signature: b.signature ?? '' };
   return b;
 }
 
@@ -104,7 +111,7 @@ function slugify(text) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48);
 }
 
-export function toGame(gen, { id, number }) {
+export function toGame(gen, { id, number, design }) {
   const usedQ = new Set();
   return {
     id,
@@ -112,6 +119,7 @@ export function toGame(gen, { id, number }) {
     title: gen.title,
     published: false,
     generated: { model: MODEL, at: new Date().toISOString() },
+    ...(design ? { design } : {}),
     teaser: gen.teaser,
     phaseNames: gen.phaseNames,
     victim: { ...gen.victim, photo: 'victima.svg' },
@@ -192,6 +200,8 @@ function solverMaterial(c) {
     if (b.type === 'kv') return b.rows.map(([k, v]) => `${k}: ${v}`).join('\n');
     if (b.type === 'log') return (b.title ? `${b.title}\n` : '') + b.rows.map(([t, x]) => `${t} — ${x}`).join('\n');
     if (b.type === 'quote') return `${b.who}: "${b.text}"`;
+    if (b.type === 'chat') return (b.title ? `${b.title}\n` : '') + b.messages.map((m) => `[${m.time}] ${m.who}: ${m.text}`).join('\n');
+    if (b.type === 'letter') return `Carta: "${b.text}"${b.signature ? ` — ${b.signature}` : ''}`;
     if (b.type === 'image') return '';
     return b.text;
   };
@@ -302,9 +312,13 @@ async function main() {
   const example = existing.find((c) => c.id === 'las-toscas');
   const nextNumber = Math.max(0, ...existing.map((c) => c.number ?? 0)) + 1;
 
+  const recipe = pickRecipe([...existing].sort((a, b) => (a.number ?? 0) - (b.number ?? 0)));
   const request = [
     theme ? `Escribí un caso nuevo. Escenario y tema: ${theme}.` : 'Escribí un caso nuevo. Elegí vos un escenario original.',
     `Casos que ya existen (no repitas escenario ni trama): ${existing.map((c) => c.title).join('; ')}.`,
+    '',
+    recipeText(recipe),
+    theme ? 'El escenario y el tema del pedido tienen prioridad sobre el lugar y la época de la receta.' : '',
   ].join('\n');
 
   const messages = [{
@@ -313,6 +327,7 @@ async function main() {
   }];
 
   console.log(`Generando el caso N.º ${String(nextNumber).padStart(2, '0')}${theme ? ` (${theme})` : ''}. Tarda unos minutos…`);
+  console.log(`${recipeText(recipe)}\n`);
   let gen;
   let game;
   for (let round = 0; ; round++) {
@@ -323,7 +338,7 @@ async function main() {
     const base = slugify(gen.title) || `caso-${nextNumber}`;
     let id = base;
     for (let n = 2; existing.some((c) => c.id === id); n++) id = `${base}-${n}`;
-    game = toGame(gen, { id, number: nextNumber });
+    game = toGame(gen, { id, number: nextNumber, design: designOf(recipe) });
 
     console.log(`  Borrador: "${gen.title}". Revisando…`);
     let problems = validateCase(game);

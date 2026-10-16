@@ -8,7 +8,8 @@
     "start": "next start",
     "generar-caso": "node --env-file-if-exists=.env scripts/generar-caso.mjs",
     "pedidos": "node --env-file-if-exists=.env scripts/pedidos.mjs",
-    "nostr-clave": "node scripts/nostr-clave.mjs"
+    "nostr-clave": "node scripts/nostr-clave.mjs",
+    "receta": "node scripts/receta.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",

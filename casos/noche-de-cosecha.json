@@ -4,6 +4,27 @@
   "title": "Noche de cosecha en Los Álamos",
   "published": true,
   "teaser": "Fiesta de cosecha en una bodega de Maipú. A la mañana, el dueño aparece muerto en la sala de los tanques.",
+  "design": {
+    "crimen": "asesinato",
+    "giro": "sin-giro",
+    "culpable": "empleado-confianza",
+    "motivo": "plata",
+    "pregunta1": "metodo",
+    "pregunta2": "objeto-movido",
+    "mecanicas": [
+      "rastro",
+      "ropa",
+      "llave",
+      "celular"
+    ],
+    "formatos": [
+      "informe",
+      "posteo"
+    ],
+    "tono": "clasico",
+    "epoca": "hoy",
+    "lugar": "una bodega en Mendoza durante la vendimia"
+  },
   "phaseNames": [
     "La sala de los tanques",
     "La tarjeta",

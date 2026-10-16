@@ -130,7 +130,18 @@ Un caso con `"published": false` es un **borrador**: aparece en local (`npm run 
 
 ### A mano
 
-Copiá `casos/las-toscas.json` y cambiá el contenido. La estructura: evidencias con `role`, `phase` y bloques (`p`, `note`, `kv`, `log`, `quote`, `image`), sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` (`who`, `how`, `why`) y `solution`.
+Copiá `casos/las-toscas.json` y cambiá el contenido. La estructura: evidencias con `role`, `phase` y bloques (`p`, `note`, `kv`, `log`, `quote`, `chat`, `letter`, `image`), sospechosos con preguntas atadas a una evidencia, `gates` para las fases 1 y 2, `accusation` (`who`, `how`, `why`) y `solution`.
+
+### Recetas: que cada caso se juegue distinto
+
+`npm run receta` sortea el diseño de un caso nuevo entre muchas opciones (en `lib/cases/variety.mjs`):
+
+- **Qué pasó:** asesinato, envenenamiento lento, desaparición, robo imposible, accidente encubierto, sabotaje o estafa.
+- **Giro:** la hora es falsa, la víctima equivocada, dos culpables, el que encontró el cuerpo, el testigo clave…
+- **Quién es el culpable:** el más querible, el que ayuda a investigar, el más joven, el de afuera…
+- **Motivo, preguntas de fase, mecánicas de pistas, documentos, tono, época, lugar y la voz de cada sospechoso.**
+
+Lo que usaron los últimos casos queda excluido, y cada caso guarda su receta en `design`. El generador por API la usa sola; a mano, se escribe el caso siguiendo la receta.
 
 ### Con Claude
 

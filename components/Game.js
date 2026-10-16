@@ -732,6 +732,25 @@ function Block({ b }) {
           </ol>
         </>
       );
+    case 'chat':
+      return (
+        <div className="chat">
+          {b.title && <p className="chat-title">{b.title}</p>}
+          {b.messages.map((m, i) => (
+            <div key={i} className={`chat-msg${i > 0 && b.messages[i - 1].who === m.who ? ' same' : ''}`}>
+              {(i === 0 || b.messages[i - 1].who !== m.who) && <span className="chat-who">{m.who}</span>}
+              <p>{m.text}<time>{m.time}</time></p>
+            </div>
+          ))}
+        </div>
+      );
+    case 'letter':
+      return (
+        <div className="letter">
+          {b.text.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+          {b.signature && <p className="letter-sign">{b.signature}</p>}
+        </div>
+      );
     case 'quote':
       return (
         <blockquote className="quote">
