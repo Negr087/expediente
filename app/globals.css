@@ -1014,3 +1014,20 @@ div.role-option { cursor: default; }
 }
 .letter p { margin: 0 !important; }
 .letter .letter-sign { text-align: right; margin-top: 6px !important; }
+
+/* Demo en video */
+.demo-link { display: inline-block; margin: -14px 0 22px; color: var(--kraft); font-weight: 600; text-decoration: none; }
+.demo-link:hover { text-decoration: underline; }
+.demo { display: grid; gap: 28px; align-items: center; justify-items: center; }
+.demo > div:first-child { justify-self: stretch; }
+@media (min-width: 760px) { .demo { grid-template-columns: 1fr auto; justify-items: start; } }
+.demo-text { color: var(--niebla); max-width: 32em; margin: 0; }
+.phone {
+  width: min(292px, 78vw);
+  padding: 10px;
+  border-radius: 36px;
+  background: #050d0e;
+  border: 1px solid var(--rio-3);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+}
+.phone video { display: block; width: 100%; height: auto; aspect-ratio: 1 / 2; border-radius: 26px; background: var(--rio); }

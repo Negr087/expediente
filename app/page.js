@@ -1,5 +1,6 @@
 import StartForm from '@/components/StartForm';
 import { listCases } from '@/lib/cases';
+import DemoVideo from '@/components/DemoVideo';
 
 export default async function Home() {
   const cases = await listCases();
@@ -9,12 +10,13 @@ export default async function Home() {
 
       <section className="hero">
         <div>
-          <h1>Un asesinato para resolver en pareja.</h1>
+          <h1>Un misterio para resolver en pareja.</h1>
           <p className="hero-lead">
             Uno es la Forense y el otro el Investigador, y cada uno tiene pistas distintas. Ninguno puede
             resolverlo solo: van a tener que hablar, cruzar lo que tienen y acusar juntos. Jueguen con un
             celular o con uno cada uno.
           </p>
+          <a className="demo-link" href="#demo">▶ Mirá cómo se juega (47 s)</a>
           <StartForm cases={cases} />
           <p className="custom-cta">
             ¿Querés un caso con tus amigos de personajes? <a href="/arma-tu-caso">Armá tu caso</a>
@@ -33,6 +35,17 @@ export default async function Home() {
           <div className="folder-front" />
           <span className="stamp">CASO ABIERTO</span>
         </div>
+      </section>
+
+      <section className="section demo" id="demo">
+        <div>
+          <h2>Mirá cómo se juega</h2>
+          <p className="demo-text">
+            Eligen un caso, se reparten los roles y cada uno lee su evidencia. Le muestran pruebas a los sospechosos,
+            se cuentan lo que encontraron y responden juntos para abrir la fase siguiente. Al final, acusan.
+          </p>
+        </div>
+        <DemoVideo />
       </section>
 
       <section className="section">
