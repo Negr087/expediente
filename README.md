@@ -85,7 +85,9 @@ Las que vienen ahora son ilustraciones SVG. Para cambiarlas por fotos reales (o 
 
 ## Armá tu caso
 
-En `/arma-tu-caso` cualquiera pide un caso a medida: cuánto dura (20, 40 o 60 minutos), dónde pasa, la víctima, de 3 a 4 sospechosos con su relación, fotos opcionales, quién es el culpable (o sorpresa) y detalles extra. Recibe un link `/pedido/<ID>` donde ve el estado (recibido, en preparación, listo) y, cuando está listo, lo juega desde ahí.
+En `/arma-tu-caso` cualquiera pide un caso a medida: cuánto dura (20, 40 o 60 minutos), dónde pasa, la víctima, de 3 a 4 sospechosos con su relación, fotos opcionales, quién es el culpable (o sorpresa) y detalles extra. Recibe un link `/pedido/<ID>` donde ve el estado (pago, recibido, en preparación, listo) y, cuando está listo, lo juega desde ahí.
+
+- **Pago en sats:** con `LIGHTNING_ADDRESS` cargada, cada pedido se cobra según la duración (`SATS_CORTO`, `SATS_MEDIO`, `SATS_LARGO`; por defecto 2.100, 4.200 y 6.300). La página del pedido muestra una factura Lightning con QR, y el pedido queda "esperando pago" (fuera de la fila) hasta que se paga. Recién ahí te llega el aviso por Nostr. El servidor pide la factura a tu Lightning Address por LNURL y confirma el pago con la URL `verify` (LUD-21), así que no hace falta nodo propio y nadie tiene acceso a tu billetera. Si la factura vence se genera otra sola. `npm run pedidos` también revisa los pagos, por si alguien pagó y cerró la página. Si rechazás un pedido pago, el aviso le pide a la persona una factura para devolverle los sats. Sin `LIGHTNING_ADDRESS`, los pedidos son gratis.
 
 - **Aviso:** la persona elige cómo enterarse de que su caso está listo: por Nostr (npub o usuario `nombre@dominio`), por email o guardándose el link. Por Nostr, el aviso sale solo al entregar o rechazar el pedido, desde la identidad del juego; por email, el script te imprime el mensaje para mandarlo. El contacto queda solo en el pedido: no se muestra en la página pública.
 - **Privado:** el caso no aparece en el inicio. Solo se juega con el link del pedido.
@@ -98,6 +100,7 @@ npm run pedidos -- ver <ID>
 npm run pedidos -- tomar <ID>
 npm run pedidos -- entregar <ID> caso.json
 npm run pedidos -- rechazar <ID> "motivo"
+npm run pedidos -- pagado <ID>           # lo pasa a la fila si te pagaron por otro lado
 npm run pedidos -- avisar <ID>           # reintenta el aviso por Nostr
 ```
 

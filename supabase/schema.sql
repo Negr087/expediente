@@ -15,7 +15,7 @@ create index if not exists rooms_updated_at_idx on public.rooms (updated_at);
 -- Pedidos de "Armá tu caso": el formulario, el estado y el caso terminado.
 create table if not exists public.pedidos (
   id text primary key,
-  status text not null default 'pendiente', -- pendiente | en_preparacion | listo | rechazado
+  status text not null default 'pendiente', -- esperando_pago | pendiente | en_preparacion | listo | rechazado
   data jsonb not null,
   case_id text unique,
   case_data jsonb,

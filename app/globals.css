@@ -998,6 +998,9 @@ div.role-option { cursor: default; }
 .pedido-steps li.now { border-color: var(--kraft); color: var(--hoja); background: var(--rio-2); }
 .pedido-steps span { display: block; font-size: 14px; color: var(--niebla); }
 .pedido-summary { margin: 20px 0; font-size: 15px; }
+.pago { text-align: center; }
+.pago-monto { font-family: var(--display); font-size: 32px; margin: 0 0 14px; }
+.pago img, .pago-qr-vacio { display: block; width: 100%; max-width: 280px; aspect-ratio: 1; margin: 0 auto 16px; image-rendering: pixelated; }
 .pedido-summary p { margin: 0 0 8px; }
 .pedido-summary span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--kraft); }
 

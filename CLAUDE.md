@@ -6,10 +6,10 @@ Juego de detectives para dos (Forense e Investigador). Next.js 15 + Supabase. To
 
 La gente llena el formulario en `/arma-tu-caso`. El pedido queda en Supabase (tabla `pedidos`, fotos en el bucket privado `pedidos`) y la persona sigue el estado en `/pedido/<ID>`. Para atender los pedidos:
 
-1. `npm run pedidos` lista los pendientes. Atendé del más viejo al más nuevo.
+1. `npm run pedidos` lista los pendientes. Atendé del más viejo al más nuevo. Los que esperan el pago en sats no aparecen hasta que se pagan (`npm run pedidos -- todos` los muestra); no los atiendas antes.
 2. `npm run pedidos -- ver <ID>` muestra el pedido completo.
 3. `npm run pedidos -- tomar <ID>` lo marca "en preparación" (la persona lo ve).
-4. Si el pedido es ofensivo, apunta a lastimar a alguien o no se puede convertir en un caso apto para todo público: `npm run pedidos -- rechazar <ID> "motivo corto y amable"` y listo.
+4. Si el pedido es ofensivo, apunta a lastimar a alguien o no se puede convertir en un caso apto para todo público: `npm run pedidos -- rechazar <ID> "motivo corto y amable"` y listo. Si estaba pago, el script lo avisa: decíselo al dueño del juego, que tiene que devolver los sats.
 5. Sorteá la receta con `npm run receta -- <duración>` (la del pedido: `corto`, `medio` o `largo`; está en `ver`) y seguila. Lo que fije el pedido (culpable, tono, lugar, época) tiene prioridad sobre la receta. Guardá en el caso el bloque `design` que imprime.
 6. Escribí el caso en un archivo **fuera del repo** (por ejemplo `/tmp/caso-<ID>.json`):
    - Formato: el mismo de `casos/robo-en-laguna-escondida.json`. Usalo solo como referencia de formato: la trama, el culpable y el tipo de pistas salen de la receta. No hace falta `id`, `number` ni `published`: los pone la entrega.

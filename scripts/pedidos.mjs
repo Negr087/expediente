@@ -7,6 +7,7 @@
 //   npm run pedidos -- tomar <ID>                lo marca "en preparación"
 //   npm run pedidos -- entregar <ID> <caso.json> valida el caso y lo publica para ese pedido
 //   npm run pedidos -- rechazar <ID> "motivo"    lo rechaza con un motivo para la persona
+//   npm run pedidos -- pagado <ID>               lo pasa a la fila aunque no figure el pago (por ejemplo, si te pagaron por otro lado)
 //   npm run pedidos -- aviso                     manda un mensaje de prueba por Nostr
 //   npm run pedidos -- avisar <ID>               vuelve a avisarle a la persona (entregado o rechazado)
 //
@@ -19,6 +20,7 @@ import {
 } from '../lib/pedidos/store.mjs';
 import { validateCase, DURATIONS } from '../lib/cases/shared.mjs';
 import { sendDm, sendDmToUser, nostrConfig } from '../lib/nostr/avisos.mjs';
+import { revisarPago } from '../lib/pagos/cobro.mjs';
 
 function fail(msg) {
   console.error(msg);
@@ -32,12 +34,15 @@ async function mustGet(id) {
   return p;
 }
 
+const pagado = (p) => Boolean(p.data.pago?.pagado);
+
 // Le avisa a quien hizo el pedido que su caso está listo (o que se rechazó).
 async function notifyUser(p) {
   const a = p.data.aviso;
   const link = `${p.data.origen ?? process.env.SITE_URL ?? ''}/pedido/${p.id}`;
+  const devolucion = pagado(p) ? `\nTe devolvemos los ${p.data.pago.sats} sats: respondé este mensaje con una factura Lightning (o tu Lightning Address) por ese monto.` : '';
   const text = p.status === 'rechazado'
-    ? `Hola${p.data.contacto ? `, ${p.data.contacto}` : ''}. No pudimos armar tu caso de Expediente (pedido ${p.id}): ${p.note}`
+    ? `Hola${p.data.contacto ? `, ${p.data.contacto}` : ''}. No pudimos armar tu caso de Expediente (pedido ${p.id}): ${p.note}${devolucion}`
     : `¡Hola${p.data.contacto ? `, ${p.data.contacto}` : ''}! Tu caso de Expediente está listo: «${p.case_data?.title}».\nJuéguenlo desde acá: ${link}`;
   if (!a || a.tipo === 'ninguno') return console.log('La persona no pidió aviso: tiene el link del pedido.');
   if (a.tipo === 'email') return console.log(`Avisale por email a ${a.valor}:\n\n${text}\n`);
@@ -57,6 +62,11 @@ function photosOf(p) {
 
 const commands = {
   async listar(status = 'pendiente') {
+    // Si alguien pagó y cerró la página antes de que el servidor lo viera, acá se detecta.
+    for (const p of await listPedidos('esperando_pago')) {
+      const { recienPagado } = await revisarPago(p);
+      if (recienPagado) console.error(`Pedido ${p.id}: pagado (${p.data.pago.sats} sats), pasa a la fila.`);
+    }
     const rows = await listPedidos(status === 'todos' ? undefined : status);
     if (!rows.length) return console.log(status === 'todos' ? 'No hay pedidos.' : `No hay pedidos en estado "${status}".`);
     for (const p of rows) {
@@ -88,6 +98,7 @@ const commands = {
   async tomar(id) {
     const p = await mustGet(id);
     if (p.status === 'listo') fail(`El pedido ${p.id} ya está entregado.`);
+    if (p.status === 'esperando_pago') fail(`El pedido ${p.id} todavía no se pagó. Si te pagaron por otro lado: npm run pedidos -- pagado ${p.id}`);
     await updatePedido(p.id, { status: 'en_preparacion' });
     console.log(`Pedido ${p.id}: en preparación.`);
   },
@@ -125,7 +136,18 @@ const commands = {
     if (!note) fail('Escribí un motivo corto para la persona: npm run pedidos -- rechazar <ID> "motivo"');
     const updated = await updatePedido(p.id, { status: 'rechazado', note });
     console.log(`Pedido ${p.id} rechazado.`);
+    if (pagado(p)) console.log(`Ojo: estaba pago (${p.data.pago.sats} sats). El aviso le pide una factura para devolvérselos.`);
     await notifyUser(updated);
+  },
+
+  async pagado(id) {
+    const p = await mustGet(id);
+    if (p.status !== 'esperando_pago') fail(`El pedido ${p.id} no está esperando pago (está "${p.status}").`);
+    const { pedido, recienPagado } = await revisarPago(p);
+    if (recienPagado) return console.log(`Pedido ${p.id}: el pago figura (${p.data.pago.sats} sats). Pasa a la fila.`);
+    const data = { ...pedido.data, pago: { ...pedido.data.pago, pagado: new Date().toISOString(), manual: true } };
+    await updatePedido(p.id, { status: 'pendiente', data }, 'esperando_pago');
+    console.log(`Pedido ${p.id}: marcado como pagado a mano. Pasa a la fila.`);
   },
 };
 

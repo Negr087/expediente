@@ -67,7 +67,9 @@ function PhotoInput({ label, photo, onChange }) {
   );
 }
 
-export default function CaseRequestForm() {
+const fmtSats = (n) => `${n.toLocaleString('es-AR')} sats`;
+
+export default function CaseRequestForm({ precios = null }) {
   const router = useRouter();
   const [contacto, setContacto] = useState('');
   const [tema, setTema] = useState('');
@@ -147,7 +149,7 @@ export default function CaseRequestForm() {
           {DURACIONES.map(([id, label]) => (
             <label key={id} className="duration-option">
               <input type="radio" name="duracion" value={id} checked={duracion === id} onChange={() => setDuracion(id)} />
-              <span>{label}</span>
+              <span>{label}{precios && ` · ${fmtSats(precios[id])}`}</span>
             </label>
           ))}
           <p className="form-help">Los más largos tienen más fases, más evidencia, más sospechosos y alguna historia secundaria.</p>
@@ -284,9 +286,12 @@ export default function CaseRequestForm() {
       {/* Campo trampa: las personas no lo ven, los bots lo completan. */}
       <input name="web" tabIndex={-1} autoComplete="off" className="trap" aria-hidden="true" />
 
-      <button className="btn btn-block" disabled={busy}>{busy ? 'Enviando…' : 'Pedir mi caso'}</button>
+      <button className="btn btn-block" disabled={busy}>{busy ? 'Enviando…' : precios ? `Pedir mi caso y pagar ${fmtSats(precios[duracion])}` : 'Pedir mi caso'}</button>
       {error && <p className="form-error" role="alert">{error}</p>}
-      <p className="form-help">El caso es privado: solo se juega con el link que te damos al enviar.</p>
+      <p className="form-help">
+        {precios && 'Se paga con Lightning, desde cualquier billetera de bitcoin. Empezamos a escribirlo cuando entra el pago. '}
+        El caso es privado: solo se juega con el link que te damos al enviar.
+      </p>
     </form>
   );
 }

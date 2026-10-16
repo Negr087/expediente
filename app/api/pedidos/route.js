@@ -3,6 +3,8 @@ import { NextResponse, after } from 'next/server';
 import { insertPedido, putPhoto } from '@/lib/pedidos/store.mjs';
 import { parsePedido, parseAviso, FormError } from '@/lib/pedidos/form.mjs';
 import { avisarPedido } from '@/lib/nostr/avisos.mjs';
+import { preciosSats } from '@/lib/pagos/lightning.mjs';
+import { nuevaFactura } from '@/lib/pagos/cobro.mjs';
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const MAX_PHOTO_BYTES = 6 * 1024 * 1024;
@@ -44,13 +46,25 @@ export async function POST(request) {
     // Para armar el link del aviso cuando el caso esté listo.
     data.origen = new URL(request.url).origin;
     const cleaned = await Promise.all(photoMap.map(async ([slot, name]) => [name, await cleanPhoto(files.get(slot))]));
+    const sats = preciosSats()?.[data.duracion];
 
     for (let attempt = 0; attempt < 5; attempt++) {
       const id = randomId();
-      if (await insertPedido({ id, data })) {
+      if (sats) {
+        // Con precio, el pedido entra a la fila recién cuando se paga (ver lib/pagos/cobro.mjs).
+        let factura;
+        try {
+          factura = await nuevaFactura(id, sats);
+        } catch (err) {
+          console.error(`Factura del pedido ${id}: ${err.message}`);
+          throw new FormError('No pudimos generar la factura para pagar. Probá de nuevo en un rato.');
+        }
+        data.pago = { sats, facturas: [factura] };
+      }
+      if (await insertPedido({ id, data, status: sats ? 'esperando_pago' : 'pendiente' })) {
         await Promise.all(cleaned.map(([name, buf]) => putPhoto(id, name, buf)));
         // El aviso sale después de responder: la persona no espera a los relays.
-        after(() => avisarPedido(id, data, data.origen));
+        if (!sats) after(() => avisarPedido(id, data, data.origen));
         return NextResponse.json({ id });
       }
     }
