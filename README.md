@@ -101,6 +101,16 @@ npm run pedidos -- rechazar <ID> "motivo"
 
 Sin variables de Supabase, los pedidos y las fotos se guardan en `.datos-locales/` (ignorada por git), para probar en local.
 
+### Aviso por Nostr
+
+Cuando entra un pedido, el juego te manda un mensaje directo cifrado por Nostr con el ID, el comienzo de la temática y el link.
+
+1. `npm run nostr-clave` crea la identidad del juego. Copiá el `NOSTR_NSEC` que imprime.
+2. En `.env` y en Vercel (Settings → Environment Variables) cargá `NOSTR_NSEC` y `NOSTR_AVISOS_NPUB` (tu npub).
+3. `npm run pedidos -- aviso` manda un mensaje de prueba.
+
+Por defecto usa mensajes privados NIP-17 (Amethyst, 0xchat, Coracle…). Si tu cliente no los muestra, agregá `NOSTR_DM=nip04`. Los relays se pueden cambiar con `NOSTR_RELAYS` (separados por coma). Sin estas variables no se manda nada.
+
 ## Reglas de puntaje
 
 Arrancan con 1.000 puntos.

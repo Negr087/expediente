@@ -1,7 +1,8 @@
 import sharp from 'sharp';
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { insertPedido, putPhoto } from '@/lib/pedidos/store.mjs';
 import { parsePedido, FormError } from '@/lib/pedidos/form.mjs';
+import { avisarPedido } from '@/lib/nostr/avisos.mjs';
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const MAX_PHOTO_BYTES = 6 * 1024 * 1024;
@@ -45,6 +46,9 @@ export async function POST(request) {
       const id = randomId();
       if (await insertPedido({ id, data })) {
         await Promise.all(cleaned.map(([name, buf]) => putPhoto(id, name, buf)));
+        // El aviso sale después de responder: la persona no espera a los relays.
+        const origin = new URL(request.url).origin;
+        after(() => avisarPedido(id, data, origin));
         return NextResponse.json({ id });
       }
     }

@@ -7,6 +7,7 @@
 //   npm run pedidos -- tomar <ID>                lo marca "en preparación"
 //   npm run pedidos -- entregar <ID> <caso.json> valida el caso y lo publica para ese pedido
 //   npm run pedidos -- rechazar <ID> "motivo"    lo rechaza con un motivo para la persona
+//   npm run pedidos -- aviso                     manda un mensaje de prueba por Nostr
 //
 // Usa Supabase si hay SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY (en .env o en el
 // entorno); si no, la carpeta local .datos-locales/.
@@ -16,6 +17,7 @@ import {
   listPedidos, getPedido, updatePedido, getPhoto, usingSupabase,
 } from '../lib/pedidos/store.mjs';
 import { validateCase } from '../lib/cases/shared.mjs';
+import { sendDm, nostrConfig } from '../lib/nostr/avisos.mjs';
 
 function fail(msg) {
   console.error(msg);
@@ -101,6 +103,13 @@ const commands = {
     await updatePedido(p.id, { status: 'rechazado', note });
     console.log(`Pedido ${p.id} rechazado.`);
   },
+};
+
+commands.aviso = async () => {
+  const cfg = nostrConfig();
+  if (!cfg) fail('Faltan NOSTR_NSEC y NOSTR_AVISOS_NPUB en .env (creá la clave con: npm run nostr-clave).');
+  const n = await sendDm('Prueba de aviso de Expediente: si leés esto, los avisos de pedidos funcionan.', cfg);
+  console.log(n ? `Mensaje publicado en ${n} relay(s) (${cfg.mode}). Fijate en tu cliente de Nostr.` : 'Ningún relay aceptó el mensaje.');
 };
 
 const [cmd = 'listar', ...args] = process.argv.slice(2);
